@@ -54,10 +54,51 @@ variable "cloudfront_price_class" {
   }
 }
 
+variable "cloudfront_cache_allowed_methods" {
+  default     = ["GET", "HEAD"]
+  type        = list(string)
+  description = "CloudFront Allowed Cache Methods - Controls which HTTP methods CloudFront processes and forwards to your Amazon S3 bucket or your custom origin."
+}
+
+variable "cloudfront_cached_methods" {
+  default     = ["GET", "HEAD"]
+  type        = list(string)
+  description = "CloudFront Cached Methods - Controls whether CloudFront caches the response to requests using the specified HTTP methods."
+}
+
+variable "cloudfront_default_ttl" {
+  default     = 3600
+  type        = number
+  description = "CloudFront Default TTL -  Default amount of time (in seconds) that an object is in a CloudFront cache before CloudFront forwards another request in the absence of an Cache-Control max-age or Expires header."
+}
+
+variable "cloudfront_min_ttl" {
+  default     = 0
+  type        = number
+  description = "CloudFront Minimum TTL"
+}
+
+variable "cloudfront_max_ttl" {
+  default     = 86400
+  type        = number
+  description = "CloudFront Maximum TTL"
+}
+
 variable "cloudfront_viewer_security_policy" {
   description = "Which Security Policy to use. Consult this table: https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/secure-connections-supported-viewer-protocols-ciphers.html"
   type        = string
   default     = "TLSv1.2_2021"
+}
+
+variable "cloudfront_viewer_ssl_support_method" {
+  description = "Which SSL support method to use. \"sni-only\" or \"vip\" supporte\"sni-only\" or \"vip\" supported"
+  type        = string
+  default     = "sni-only"
+  validation {
+    condition     = var.cloudfront_viewer_ssl_support_method == "sni-only" || var.cloudfront_viewer_ssl_support_method == "vip"
+    error_message = "The Variable \"clodfront_viewer_ssl_support_method\" is invalid. It must be set to either \"sni-only\" or \"vip\""
+  }
+
 }
 
 variable "force_destroy_bucket" {
