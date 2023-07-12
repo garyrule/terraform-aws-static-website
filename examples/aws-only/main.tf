@@ -1,0 +1,17 @@
+terraform {
+  required_version = ">= 1.4.6, < 2.0.0"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.5.0"
+    }
+  }
+}
+
+## Example All-AWS w/ mimimum inputs
+module "site" {
+  source           = "git::git@github.com:garyrule/tf_static_web.git?ref=master"
+  route53_zone_id  = var.route53_zone_id
+  website_hostname = var.website_hostname
+}
