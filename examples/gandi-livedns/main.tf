@@ -22,5 +22,6 @@ module "site" {
   website_hostname                  = var.website_hostname
   gandi_key                         = var.gandi_key
   gandi_sharing_id                  = var.gandi_sharing_id
+  # referer_header                    =  "something" # Recommend letting the module generate this
 }
 
