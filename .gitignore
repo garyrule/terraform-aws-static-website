@@ -1,0 +1,10 @@
+.idea
+*.iml
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+*.lock.hcl
+*tfplan*
+*.save
