@@ -3,6 +3,21 @@ A Terraform Module to configure a static website using Amazon AWS Services
 
 Support for using Gandi LiveDNS instead of Route53
 
+<!-- TOC -->
+* [tf_static_web](#tfstaticweb)
+  * [Prerequisites](#prerequisites)
+  * [Cost Example](#cost-example)
+      * [Assumptions](#assumptions)
+    * [AWS](#aws)
+    * [Gandi](#gandi)
+  * [Notes](#notes)
+  * [Example using Route53 for aws-only solution](#example-using-route53-for-aws-only-solution)
+  * [Example using Gandi LiveDNS](#example-using-gandi-livedns)
+  * [Examples](#examples)
+  * [Providers](#providers)
+  * [Inputs](#inputs)
+  * [Outputs](#outputs)
+<!-- TOC -->
 | Function            | Service                  |
 |---------------------|--------------------------|
 | Static File hosting | S3                       |
