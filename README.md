@@ -11,10 +11,10 @@ Support for using Gandi LiveDNS instead of Route53
     * [AWS](#aws)
     * [Gandi](#gandi)
   * [Notes](#notes)
-  * [Example using Route53 for aws-only solution](#example-using-route53-for-aws-only-solution)
-  * [Example using Gandi LiveDNS](#example-using-gandi-livedns)
   * [Examples](#examples)
+  * [Requirements](#requirements)
   * [Providers](#providers)
+  * [Resources](#resources)
   * [Inputs](#inputs)
   * [Outputs](#outputs)
 <!-- TOC -->
@@ -84,64 +84,20 @@ To provide a small barrier to the public from reading the contents fo the S3 buc
 
 This module will generate a header value automatically or you can provide your own with the variable `referer_header`
 
+## Examples
+* [AWS Only Example](./examples/aws-only)
+* [Gandi LiveDNS Example](./examples/gandi-livedns)
 
 <!-- BEGIN_TF_DOCS -->
+## Requirements
 
-## Example using Route53 for aws-only solution
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.4.6, < 2.0.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 5.5.0 |
+| <a name="requirement_gandi"></a> [gandi](#requirement\_gandi) | = 2.2.3 |
+| <a name="requirement_random"></a> [random](#requirement\_random) | 3.5.1 |
 
-```hcl
-terraform {
-  required_version = ">= 1.4.6, < 2.0.0"
-
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.5.0"
-    }
-  }
-}
-
-## Example All-AWS w/ mimimum inputs
-module "site" {
-  source           = "git::git@github.com:garyrule/tf_static_web.git?ref=master"
-  route53_zone_id  = var.route53_zone_id
-  website_hostname = var.website_hostname
-}
-```
-
-## Example using Gandi LiveDNS
-```hcl
-terraform {
-  required_version = ">= 1.4.6, < 2.0.0"
-
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.5.0"
-    }
-  }
-}
-
-## Example using Gandi LiveDNS with all inputs
-module "site" {
-  source                            = "git::git@github.com:garyrule/tf_static_web.git?ref=master"
-  dns_type                          = "gandi"
-  region                            = "us-east-2"
-  bucket_versioning                 = true
-  cloudfront_price_class            = "PriceClass_100"
-  cloudfront_viewer_security_policy = "TLSv1.2_2021"
-  force_destroy_bucket              = true
-  referer_header                    = "SuperS3cetSh4r3dKey!"
-  website_hostname                  = var.website_hostname
-  gandi_key                         = var.gandi_key
-  gandi_sharing_id                  = var.gandi_sharing_id
-}
-
-```
-
-## Examples
-* [AWS Only using Route53](examples/aws-only/)
-* [Gandi LiveDNS ](examples/gandi-livedns/)
 ## Providers
 
 | Name | Version |
@@ -150,6 +106,30 @@ module "site" {
 | <a name="provider_aws.use1"></a> [aws.use1](#provider\_aws.use1) | 5.5.0 |
 | <a name="provider_gandi"></a> [gandi](#provider\_gandi) | 2.2.3 |
 | <a name="provider_random"></a> [random](#provider\_random) | 3.5.1 |
+
+## Resources
+
+| Name | Type |
+|------|------|
+| [aws_acm_certificate.site](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/acm_certificate) | resource |
+| [aws_acm_certificate_validation.site-aws](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/acm_certificate_validation) | resource |
+| [aws_acm_certificate_validation.site-gandi](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/acm_certificate_validation) | resource |
+| [aws_cloudfront_distribution.site](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_distribution) | resource |
+| [aws_route53_record.site](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
+| [aws_route53_record.site-validation](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
+| [aws_s3_bucket.site](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket) | resource |
+| [aws_s3_bucket_acl.site](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_acl) | resource |
+| [aws_s3_bucket_cors_configuration.site](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_cors_configuration) | resource |
+| [aws_s3_bucket_ownership_controls.site](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_ownership_controls) | resource |
+| [aws_s3_bucket_policy.site](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_policy) | resource |
+| [aws_s3_bucket_public_access_block.site-grant](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_public_access_block) | resource |
+| [aws_s3_bucket_versioning.site](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_versioning) | resource |
+| [aws_s3_bucket_website_configuration.site](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_website_configuration) | resource |
+| [gandi_livedns_record.site](https://registry.terraform.io/providers/go-gandi/gandi/2.2.3/docs/resources/livedns_record) | resource |
+| [gandi_livedns_record.site-validation](https://registry.terraform.io/providers/go-gandi/gandi/2.2.3/docs/resources/livedns_record) | resource |
+| [random_string.referer](https://registry.terraform.io/providers/hashicorp/random/3.5.1/docs/resources/string) | resource |
+| [aws_iam_policy_document.get-all-with-header](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -164,7 +144,8 @@ module "site" {
 | <a name="input_gandi_sharing_id"></a> [gandi\_sharing\_id](#input\_gandi\_sharing\_id) | Gandi API Sharing ID | `string` | `""` | no |
 | <a name="input_referer_header"></a> [referer\_header](#input\_referer\_header) | Shared secret that Cloudfront will pass to S3 in order to read the bucket contents | `string` | `""` | no |
 | <a name="input_region"></a> [region](#input\_region) | AWS Region | `string` | `"us-west-2"` | no |
-| <a name="input_route53_zone_id"></a> [route53\_zone\_id](#input\_route53\_zone\_id) | Route53 Zone ID for website TLD | `string` | `""` | no |
+| <a name="input_route53_zone_id"></a> [route53\_zone\_id](#input\_route53\_zone\_id) | Route 53 Zone ID for website TLD | `string` | `""` | no |
+
 ## Outputs
 
 | Name | Description |
@@ -185,7 +166,7 @@ module "site" {
 | <a name="output_dns-site-id"></a> [dns-site-id](#output\_dns-site-id) | DNS Site ID |
 | <a name="output_dns-site-name"></a> [dns-site-name](#output\_dns-site-name) | DNS Site Name |
 | <a name="output_gandi-domain"></a> [gandi-domain](#output\_gandi-domain) | Are we a Gandi Domain Boolean |
-| <a name="output_referer_header_value"></a> [referer\_header\_value](#output\_referer\_header\_value) | Referer header value Cloudfront passes to the S3 bucket |
+| <a name="output_referer-header-value"></a> [referer-header-value](#output\_referer-header-value) | Referer header value Cloudfront passes to the S3 bucket |
 | <a name="output_site-certificate-arn"></a> [site-certificate-arn](#output\_site-certificate-arn) | Site Certificate ARN |
 | <a name="output_site-certificate-domain-name"></a> [site-certificate-domain-name](#output\_site-certificate-domain-name) | Site Certificate domain name |
 | <a name="output_site-certificate-domain-validation-options"></a> [site-certificate-domain-validation-options](#output\_site-certificate-domain-validation-options) | Site Certificate Domain Validation Options |

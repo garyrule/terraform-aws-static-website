@@ -119,7 +119,7 @@ resource "aws_acm_certificate_validation" "site-gandi" {
 }
 
 # DNS
-# Create AWS Route53 records if local.gandi_zone is false
+# Create AWS Route 53 records if local.gandi_zone is false
 resource "aws_route53_record" "site" {
   count   = local.gandi_zone ? 0 : 1
   zone_id = var.route53_zone_id

@@ -12,25 +12,7 @@ recursive:
 sections:
   hide: []
   show: []
-content: |-
-  {{ .Header }}
-  ## Example using Route53 for aws-only solution
-
-  ```hcl
-  {{ include "examples/aws-only/main.tf" }}
-  ```
-
-  ## Example using Gandi LiveDNS
-  ```hcl
-  {{ include "examples/gandi-livedns/main.tf" }}
-  ```
-
-  ## Examples
-  * [AWS Only using Route53](examples/aws-only/)
-  * [Gandi LiveDNS ](examples/gandi-livedns/)
-  {{ .Providers }}
-  {{ .Inputs }}
-  {{ .Outputs }}
+content: ""
 
 output:
   file: "README.md"

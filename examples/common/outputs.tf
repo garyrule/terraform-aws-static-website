@@ -97,9 +97,9 @@ output "cloudfront-distribution-http-last-modified-time" {
   value       = module.site.cloudfront-distribution-http-last-modified-time
 }
 
-output "referer_header_value" {
+output "referer-header-value" {
   description = "Referer header value Cloudfront passes to the S3 bucket"
-  value       = module.site.referer_header_value
+  value       = module.site.referer-header-value
 }
 
 #---------
@@ -122,9 +122,11 @@ output "dns-site-name" {
 
 # Deployment Type Booleans
 output "z-is-gandi-domain" {
-  value = module.site.gandi-domain
+  description = "True if deployment DNS is using Gandi"
+  value       = module.site.gandi-domain
 }
 
 output "z-is-route53-domain" {
-  value = !module.site.gandi-domain
+  description = "True if deployment DNS is using Route 53"
+  value       = !module.site.gandi-domain
 }

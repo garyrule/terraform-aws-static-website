@@ -1,10 +1,13 @@
 ## Instructions
-The module will configure a static website with Route53.
+The module will configure a static website with Route 53.
 
 ### Create Input Variables
 * Create `terraform.tfvars` with input variables
   * `website_hostname`
   * `route53_zone_id`
+
+### Edit main.tf - Optional
+Edit `main.tf` and make any changes.
 
 ### Initialize Project
 * `terraform init`
@@ -17,26 +20,35 @@ $ ../bin/deploy-site.sh -s htdocs
 ```
 
 <!-- BEGIN_TF_DOCS -->
-## Requirements
 
-| Name | Version |
-|------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.4.6, < 2.0.0 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 5.5.0 |
 
-## Modules
+## Example using AWS Route 53
+```hcl
+terraform {
+  required_version = ">= 1.4.6, < 2.0.0"
 
-| Name | Source | Version |
-|------|--------|---------|
-| <a name="module_site"></a> [site](#module\_site) | git::git@github.com:garyrule/tf_static_web.git | master |
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.5.0"
+    }
+  }
+}
+
+## Example All-AWS w/ mimimum inputs
+module "site" {
+  source           = "git::git@github.com:garyrule/tf_static_web.git?ref=master"
+  route53_zone_id  = var.route53_zone_id
+  website_hostname = var.website_hostname
+}
+```
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_route53_zone_id"></a> [route53\_zone\_id](#input\_route53\_zone\_id) | Zone ID of Route53 Zone that we are using to host this website | `string` | n/a | yes |
+| <a name="input_route53_zone_id"></a> [route53\_zone\_id](#input\_route53\_zone\_id) | Zone ID of Route 53 Zone that we are using to host this website | `string` | n/a | yes |
 | <a name="input_website_hostname"></a> [website\_hostname](#input\_website\_hostname) | Fully Qualified Domain Name for website | `string` | n/a | yes |
-
 ## Outputs
 
 | Name | Description |
@@ -56,13 +68,13 @@ $ ../bin/deploy-site.sh -s htdocs
 | <a name="output_dns-site-alias"></a> [dns-site-alias](#output\_dns-site-alias) | DNS Site Alias |
 | <a name="output_dns-site-id"></a> [dns-site-id](#output\_dns-site-id) | DNS Site ID |
 | <a name="output_dns-site-name"></a> [dns-site-name](#output\_dns-site-name) | DNS Site Name |
-| <a name="output_referer_header_value"></a> [referer\_header\_value](#output\_referer\_header\_value) | Referer header value Cloudfront passes to the S3 bucket |
+| <a name="output_referer-header-value"></a> [referer-header-value](#output\_referer-header-value) | Referer header value Cloudfront passes to the S3 bucket |
 | <a name="output_site-certificate-arn"></a> [site-certificate-arn](#output\_site-certificate-arn) | Site Certificate ARN |
 | <a name="output_site-certificate-domain-name"></a> [site-certificate-domain-name](#output\_site-certificate-domain-name) | Site Certificate domain name |
 | <a name="output_site-certificate-domain-validation-options"></a> [site-certificate-domain-validation-options](#output\_site-certificate-domain-validation-options) | Site Certificate Domain Validation Options |
 | <a name="output_site-certificate-expiration"></a> [site-certificate-expiration](#output\_site-certificate-expiration) | Site Certificate Expiration |
 | <a name="output_site-certificate-issued"></a> [site-certificate-issued](#output\_site-certificate-issued) | Site Certificate Issued |
 | <a name="output_site-certificate-status"></a> [site-certificate-status](#output\_site-certificate-status) | Site Certificate provisioning status |
-| <a name="output_z-is-gandi-domain"></a> [z-is-gandi-domain](#output\_z-is-gandi-domain) | n/a |
-| <a name="output_z-is-route53-domain"></a> [z-is-route53-domain](#output\_z-is-route53-domain) | n/a |
+| <a name="output_z-is-gandi-domain"></a> [z-is-gandi-domain](#output\_z-is-gandi-domain) | True if deployment DNS is using Gandi |
+| <a name="output_z-is-route53-domain"></a> [z-is-route53-domain](#output\_z-is-route53-domain) | True if deployment DNS is using Route 53 |
 <!-- END_TF_DOCS -->

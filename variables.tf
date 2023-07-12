@@ -4,11 +4,11 @@ variable "website_hostname" {
   description = "Fully qualified domain name for website - www.yourdomain.com"
 }
 
-# If you're using Route53 you only need to set route53_zone_id
+# If you're using Route 53 you only need to set route53_zone_id
 # AWS
 variable "route53_zone_id" {
   type        = string
-  description = "Route53 Zone ID for website TLD"
+  description = "Route 53 Zone ID for website TLD"
   default     = ""
 }
 

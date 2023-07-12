@@ -120,7 +120,7 @@ output "gandi-domain" {
   value       = local.gandi_zone
 }
 
-output "referer_header_value" {
+output "referer-header-value" {
   description = "Referer header value Cloudfront passes to the S3 bucket"
   value       = local.referer_header
 }

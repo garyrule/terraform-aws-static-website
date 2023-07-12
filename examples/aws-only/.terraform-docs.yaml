@@ -12,7 +12,18 @@ recursive:
 sections:
   hide: []
   show: []
-content: ""
+
+content: |-
+  {{ .Header }}
+  
+  ## Example using AWS Route 53
+  ```hcl
+  {{ include "main.tf" }}
+  ```
+  {{ .Providers }}
+  {{ .Inputs }}
+  {{ .Outputs }}
+
 
 output:
   file: "README.md"

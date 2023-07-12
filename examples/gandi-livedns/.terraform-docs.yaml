@@ -12,7 +12,17 @@ recursive:
 sections:
   hide: []
   show: []
-content: ""
+content: |-
+  {{ .Header }}
+  
+  ## Example using Gandi LiveDNS
+  ```hcl
+  {{ include "main.tf" }}
+  ```
+  {{ .Providers }}
+  {{ .Inputs }}
+  {{ .Outputs }}
+
 
 output:
   file: "README.md"

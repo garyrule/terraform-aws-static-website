@@ -8,6 +8,9 @@ The module will configure a static website using Gandi LiveDNS.
   * `gandi_key`
   * `gandi_sharing_id`
 
+### Edit main.tf - Optional
+Edit `main.tf` and make any changes. 
+
 ### Initialize Project
 * `terraform init`
 * `terraform plan -var-file terraform.tfvars -out tfplan.out`
@@ -19,18 +22,37 @@ $ ../bin/deploy-site.sh -s htdocs
 ```
 
 <!-- BEGIN_TF_DOCS -->
-## Requirements
 
-| Name | Version |
-|------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.4.6, < 2.0.0 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 5.5.0 |
 
-## Modules
+## Example using Gandi LiveDNS
+```hcl
+terraform {
+  required_version = ">= 1.4.6, < 2.0.0"
 
-| Name | Source | Version |
-|------|--------|---------|
-| <a name="module_site"></a> [site](#module\_site) | git::git@github.com:garyrule/tf_static_web.git | master |
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.5.0"
+    }
+  }
+}
+
+## Example using Gandi LiveDNS with all inputs
+module "site" {
+  #source                            = "git::git@github.com:garyrule/tf_static_web.git?ref=master"
+  source                            = "../../"
+  dns_type                          = "gandi"
+  region                            = "us-east-2"
+  bucket_versioning                 = true
+  cloudfront_price_class            = "PriceClass_100"
+  cloudfront_viewer_security_policy = "TLSv1.2_2021"
+  force_destroy_bucket              = true
+  website_hostname                  = var.website_hostname
+  gandi_key                         = var.gandi_key
+  gandi_sharing_id                  = var.gandi_sharing_id
+}
+
+```
 
 ## Inputs
 
@@ -39,7 +61,6 @@ $ ../bin/deploy-site.sh -s htdocs
 | <a name="input_website_hostname"></a> [website\_hostname](#input\_website\_hostname) | Fully Qualified Domain Name for website | `string` | n/a | yes |
 | <a name="input_gandi_key"></a> [gandi\_key](#input\_gandi\_key) | Gandi API Key | `string` | `""` | no |
 | <a name="input_gandi_sharing_id"></a> [gandi\_sharing\_id](#input\_gandi\_sharing\_id) | Gandi API Sharing ID | `string` | `""` | no |
-
 ## Outputs
 
 | Name | Description |
@@ -59,13 +80,13 @@ $ ../bin/deploy-site.sh -s htdocs
 | <a name="output_dns-site-alias"></a> [dns-site-alias](#output\_dns-site-alias) | DNS Site Alias |
 | <a name="output_dns-site-id"></a> [dns-site-id](#output\_dns-site-id) | DNS Site ID |
 | <a name="output_dns-site-name"></a> [dns-site-name](#output\_dns-site-name) | DNS Site Name |
-| <a name="output_referer_header_value"></a> [referer\_header\_value](#output\_referer\_header\_value) | Referer header value Cloudfront passes to the S3 bucket |
+| <a name="output_referer-header-value"></a> [referer-header-value](#output\_referer-header-value) | Referer header value Cloudfront passes to the S3 bucket |
 | <a name="output_site-certificate-arn"></a> [site-certificate-arn](#output\_site-certificate-arn) | Site Certificate ARN |
 | <a name="output_site-certificate-domain-name"></a> [site-certificate-domain-name](#output\_site-certificate-domain-name) | Site Certificate domain name |
 | <a name="output_site-certificate-domain-validation-options"></a> [site-certificate-domain-validation-options](#output\_site-certificate-domain-validation-options) | Site Certificate Domain Validation Options |
 | <a name="output_site-certificate-expiration"></a> [site-certificate-expiration](#output\_site-certificate-expiration) | Site Certificate Expiration |
 | <a name="output_site-certificate-issued"></a> [site-certificate-issued](#output\_site-certificate-issued) | Site Certificate Issued |
 | <a name="output_site-certificate-status"></a> [site-certificate-status](#output\_site-certificate-status) | Site Certificate provisioning status |
-| <a name="output_z-is-gandi-domain"></a> [z-is-gandi-domain](#output\_z-is-gandi-domain) | n/a |
-| <a name="output_z-is-route53-domain"></a> [z-is-route53-domain](#output\_z-is-route53-domain) | n/a |
+| <a name="output_z-is-gandi-domain"></a> [z-is-gandi-domain](#output\_z-is-gandi-domain) | True if deployment DNS is using Gandi |
+| <a name="output_z-is-route53-domain"></a> [z-is-route53-domain](#output\_z-is-route53-domain) | True if deployment DNS is using Route 53 |
 <!-- END_TF_DOCS -->
