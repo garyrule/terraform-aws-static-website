@@ -296,6 +296,7 @@ resource "aws_cloudfront_distribution" "site" {
   }
 
   default_cache_behavior {
+    # VARS
     allowed_methods  = ["GET", "HEAD"]
     cached_methods   = ["GET", "HEAD"]
     target_origin_id = "S3-${var.website_hostname}"
@@ -309,13 +310,15 @@ resource "aws_cloudfront_distribution" "site" {
     }
 
     viewer_protocol_policy = "redirect-to-https"
-    min_ttl                = 31536000
-    default_ttl            = 31536000
-    max_ttl                = 31536000
-    compress               = true
+    # VARS
+    min_ttl     = 31536000
+    default_ttl = 31536000
+    max_ttl     = 31536000
+    compress    = true
   }
 
   restrictions {
+    # VAR?
     geo_restriction {
       restriction_type = "none"
     }
@@ -324,7 +327,8 @@ resource "aws_cloudfront_distribution" "site" {
   viewer_certificate {
     acm_certificate_arn      = local.certificate_validation_arn
     minimum_protocol_version = var.cloudfront_viewer_security_policy
-    ssl_support_method       = "sni-only"
+    # VAR
+    ssl_support_method = "sni-only"
   }
   tags = local.tags
 }

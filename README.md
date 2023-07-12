@@ -1,10 +1,21 @@
 # tf_static_web
 A Terraform Module to configure a static website using Amazon AWS Services
 
-Support for using Gandi LiveDNS instead of Route53
+Support for using [Gandi](https://www.gandi.net) LiveDNS instead of Route53
+
+## Components
+
+| Function            | Service                                                                                                |
+|---------------------|--------------------------------------------------------------------------------------------------------|
+| Static File hosting | [S3](https://aws.amazon.com/s3/)                                                                       |
+| Certificate         | [ACM](https://aws.amazon.com/certificate-manager/)                                                     |
+| DNS                 | [Route 53](https://aws.amazon.com/route53/) or [Gandi LiveDNS](https://www.gandi.net/en-US/domain/dns) |
+| CDN                 | [Cloudfront](https://aws.amazon.com/cloudfront/)                                                                                         |
+
 
 <!-- TOC -->
 * [tf_static_web](#tfstaticweb)
+  * [Components](#components-)
   * [Prerequisites](#prerequisites)
   * [Cost Example](#cost-example)
       * [Assumptions](#assumptions)
@@ -18,13 +29,6 @@ Support for using Gandi LiveDNS instead of Route53
   * [Inputs](#inputs)
   * [Outputs](#outputs)
 <!-- TOC -->
-| Function            | Service                  |
-|---------------------|--------------------------|
-| Static File hosting | S3                       |
-| Certificate         | ACM                      |
-| DNS                 | Route53 or Gandi LiveDNS |
-| CDN                 | Cloudfront               |
-
 
 ## Prerequisites
 * AWS Account
@@ -73,7 +77,7 @@ The cost is lower if your deployment is covered under the [AWS Free Tier](https:
 | **Total**     | **$0.90** | **$0.05**                    |
 
 
-## Notes
+## Notes About Security
 When you use the Amazon S3 static website endpoint, connections between CloudFront and Amazon S3 are available only over HTTP.
 
 For this configuration, the S3 bucket's block public access settings must be turned off.
