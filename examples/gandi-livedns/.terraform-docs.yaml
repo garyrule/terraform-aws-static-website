@@ -14,7 +14,7 @@ sections:
   show: []
 content: |-
   {{ .Header }}
-  
+
   ## Example using Gandi LiveDNS
   ```hcl
   {{ include "main.tf" }}

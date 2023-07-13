@@ -9,7 +9,7 @@ The module will configure a static website using Gandi LiveDNS.
   * `gandi_sharing_id`
 
 ### Edit main.tf - Optional
-Edit `main.tf` and make any changes. 
+Edit `main.tf` and make any changes.
 
 ### Initialize Project
 * `terraform init`

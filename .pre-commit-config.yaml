@@ -1,4 +1,3 @@
-exclude: 'example'
 repos:
   - repo: https://github.com/terraform-docs/terraform-docs
     rev: "v0.16.0"
@@ -11,11 +10,13 @@ repos:
     - id: terraform-fmt
       args: ['-recursive']
     - id: terraform-validate
+      exclude: 'examples'
 
   - repo: https://github.com/antonbabenko/pre-commit-terraform
     rev: "v1.81.0" # Get the latest from: https://github.com/antonbabenko/pre-commit-terraform/releases
     hooks:
     - id: terraform_tflint
+      exclude: 'examples/common'
       args:
       - --hook-config=--delegate-chdir
 

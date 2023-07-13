@@ -15,7 +15,7 @@ sections:
 
 content: |-
   {{ .Header }}
-  
+
   ## Example using AWS Route 53
   ```hcl
   {{ include "main.tf" }}
