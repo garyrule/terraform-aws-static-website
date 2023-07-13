@@ -17,10 +17,7 @@ With support for using [Gandi](https://www.gandi.net) LiveDNS instead of Route53
 * [terraform-aws-static-web](#terraform-aws-static-web)
   * [Components](#components)
   * [Prerequisites](#prerequisites)
-  * [Cost Example](#cost-example)
-      * [Assumptions](#assumptions)
-    * [AWS](#aws)
-    * [Gandi](#gandi)
+  * [Components](#components-)
   * [Examples](#examples)
   * [Requirements](#requirements)
   * [Providers](#providers)
@@ -35,45 +32,10 @@ With support for using [Gandi](https://www.gandi.net) LiveDNS instead of Route53
 * Gandi Account - *If using Gandi LiveDNS*
 
 
+## Components
 ![terraform-aws-static-web](./img/dia.jpeg)
 
 
-## Cost Example
-You should use the [AWS Pricing Calculator](https://calculator.aws/) to best determine your costs.
-The estimates are an example only and do not take into account any other infrastructure you may run.
-
-The cost is lower if your deployment is covered under the [AWS Free Tier](https://aws.amazon.com/free/)
-
-#### Assumptions
-* 1 S3 bucket with 500 MB of data
-  * 250 PUT, COPY, POST, LIST requests / mo
-  * 10,000 SELECT, GET requests / mo
-  * Outbound data to Cloudfront is free
-* 1 x Cloudfront Distribution
-  * 10 GB /mo of outbound data transfer to the internet
-  * 25,000 HTTPS requests /mo
-* 1 x either AWS Route 53 Hosted Zone or a Gandi Domain w/ LiveDNS
-  * w/ Route 53, 25,000 standard queries / mo
-  * w/ Gandi, unlimited /mo
-
-
-### AWS
-| Service      | Cost / Mo | Covered Under Free Tier / mo |
-|--------------|-----------|------------------------------|
-| Route 53     | $0.51     | $0.51                        |
-| S3           | $0.02     | $0.02                        |
-| CloudFront   | $0.88     | $0.03                        |
-| **Total**    | **$1.41** | **$0.56**                    |
-
-
-### Gandi
-
-| Service       | Cost / Mo | Covered Under Free Tier / mo |
-|---------------|-----------|------------------------------|
-| Gandi LiveDNS | $0.00     | $0.00                        |
-| S3            | $0.02     | $0.02                        |
-| CloudFront    | $0.88     | $0.03                        |
-| **Total**     | **$0.90** | **$0.05**                    |
 
 
 ## Examples
