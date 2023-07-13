@@ -2,6 +2,8 @@
 A Terraform Module to create a static website using Amazon AWS Services.
 
 With support for using [Gandi](https://www.gandi.net) LiveDNS instead of Route53
+<hr>
+
 <!-- TOC -->
 * [terraform-aws-static-website](#terraform-aws-static-website)
   * [Components](#components)
