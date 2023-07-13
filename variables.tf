@@ -91,7 +91,7 @@ variable "cloudfront_viewer_security_policy" {
 }
 
 variable "cloudfront_viewer_ssl_support_method" {
-  description = "Which SSL support method to use. \"sni-only\" or \"vip\" supporte\"sni-only\" or \"vip\" supported"
+  description = "Which SSL support method to use. \"sni-only\" or \"vip\" supported"
   type        = string
   default     = "sni-only"
   validation {

@@ -11,11 +11,6 @@ output "bucket-region" {
   value       = module.site.bucket-region
 }
 
-#output "bucket-endpoint" {
-#  description = "Static file Bucket Website Endpoint"
-#  value       = module.site.bucket-endpoint
-#}
-
 output "bucket-hosted-zone-id" {
   description = "Static file Bucket Zone ID"
   value       = module.site.bucket-hosted-zone-id
@@ -96,11 +91,6 @@ output "cloudfront-distribution-http-last-modified-time" {
   description = "Cloudfront Distribution Last Modified"
   value       = module.site.cloudfront-distribution-http-last-modified-time
 }
-
-#output "referer-header-value" {
-#  description = "Referer header value Cloudfront passes to the S3 bucket"
-#  value       = module.site.referer-header-value
-#}
 
 #---------
 # DNS
