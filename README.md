@@ -1,7 +1,7 @@
 # terraform-aws-static-web
 A Terraform Module to configure a static website using Amazon AWS Services
 
-Support for using [Gandi](https://www.gandi.net) LiveDNS instead of Route53
+With support for using [Gandi](https://www.gandi.net) LiveDNS instead of Route53
 
 ## Components
 
