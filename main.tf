@@ -39,11 +39,12 @@ locals {
   domain      = join(".", slice(local.fqdn_bits, 1, local.fqdn_length)) # Remainder is domain
 
   # Coalesce data for certificate and DNS
+  dns-site-id = coalescelist(aws_route53_record.site[*].id, gandi_livedns_record.site[*].id)
+  # Route 53 Alias or Gandi Values
+  dns-site-alias                      = coalescelist(aws_route53_record.site[*].alias, gandi_livedns_record.site[*].values)
+  dns-site-name                       = one(coalescelist(aws_route53_record.site[*].name, gandi_livedns_record.site[*].name))
   certificate_validation_arn          = one(coalescelist(aws_acm_certificate_validation.site-aws[*].certificate_arn, aws_acm_certificate_validation.site-gandi[*].certificate_arn))
   certificate_validation_record_fqdns = one(coalescelist(aws_acm_certificate_validation.site-aws[*].validation_record_fqdns, aws_acm_certificate_validation.site-gandi[*].validation_record_fqdns))
-  dns-site-id                         = coalescelist(aws_route53_record.site[*].id, gandi_livedns_record.site[*].id, [""])
-  dns-site-name                       = one(coalescelist(aws_route53_record.site[*].name, gandi_livedns_record.site[*].name, [""]))
-  dns-site-alias                      = coalescelist(aws_route53_record.site[*].alias, gandi_livedns_record.site[*].values, [""])
 
   # Tags
   tags = {

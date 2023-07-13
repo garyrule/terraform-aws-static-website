@@ -78,10 +78,11 @@ syntaxCheck() {
 }
 
 usage() {
+  echo
   echo "USAGE"
   echo "-----"
   echo "$0 -s source_dir"
-  echo "e.x. $0 -s ~/website_files/mywebsite"
+  echo "e.x. $0 -s ~/website/htdocs"
   echo
 }
 
