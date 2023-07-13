@@ -7,11 +7,9 @@ variable "website_hostname" {
 variable "gandi_key" {
   description = "Gandi API Key"
   type        = string
-  default     = ""
 }
 
 variable "gandi_sharing_id" {
   description = "Gandi API Sharing ID"
   type        = string
-  default     = ""
 }

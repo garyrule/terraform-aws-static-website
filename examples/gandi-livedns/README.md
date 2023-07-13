@@ -57,9 +57,9 @@ module "site" {
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_gandi_key"></a> [gandi\_key](#input\_gandi\_key) | Gandi API Key | `string` | n/a | yes |
+| <a name="input_gandi_sharing_id"></a> [gandi\_sharing\_id](#input\_gandi\_sharing\_id) | Gandi API Sharing ID | `string` | n/a | yes |
 | <a name="input_website_hostname"></a> [website\_hostname](#input\_website\_hostname) | Fully Qualified Domain Name for website | `string` | n/a | yes |
-| <a name="input_gandi_key"></a> [gandi\_key](#input\_gandi\_key) | Gandi API Key | `string` | `""` | no |
-| <a name="input_gandi_sharing_id"></a> [gandi\_sharing\_id](#input\_gandi\_sharing\_id) | Gandi API Sharing ID | `string` | `""` | no |
 ## Outputs
 
 | Name | Description |
