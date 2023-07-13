@@ -22,7 +22,7 @@ output "bucket-versioning" {
 }
 
 output "s3_bucket_policy" {
-  description = "Cloudfront Origin Access Control"
+  description = "CloudFront Origin Access Control"
   value       = aws_s3_bucket_policy.site.policy
 }
 
@@ -65,40 +65,40 @@ output "certificate-validation-domain-name" {
 }
 
 #---------
-# Cloudfront
+# CloudFront
 #---------
 output "cloudfront-distribution-id" {
-  description = "Cloudfront Distribution ID"
+  description = "CloudFront Distribution ID"
   value       = aws_cloudfront_distribution.site.id
 }
 
 output "cloudfront-distribution-domain-name" {
-  description = "Cloudfront Distribution Domain Name"
+  description = "CloudFront Distribution Domain Name"
   value       = aws_cloudfront_distribution.site.domain_name
 }
 
 output "cloudfront-distribution-zone-id" {
-  description = "Cloudfront Distribution Zone ID"
+  description = "CloudFront Distribution Zone ID"
   value       = aws_cloudfront_distribution.site.hosted_zone_id
 }
 
 output "cloudfront-distribution-status" {
-  description = "Cloudfront Distribution Status"
+  description = "CloudFront Distribution Status"
   value       = aws_cloudfront_distribution.site.status
 }
 
 output "cloudfront-distribution-http-version" {
-  description = "Cloudfront Distribution HTTP Version"
+  description = "CloudFront Distribution HTTP Version"
   value       = aws_cloudfront_distribution.site.http_version
 }
 
 output "cloudfront-distribution-http-last-modified-time" {
-  description = "Cloudfront Distribution Last Modified"
+  description = "CloudFront Distribution Last Modified"
   value       = aws_cloudfront_distribution.site.last_modified_time
 }
 
 output "cloudfront-origin-access-control-id" {
-  description = "Cloudfront Origin Access Control"
+  description = "CloudFront Origin Access Control"
   value       = aws_cloudfront_origin_access_control.site.id
 }
 

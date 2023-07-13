@@ -185,7 +185,7 @@ resource "aws_s3_bucket_policy" "site" {
   policy   = data.aws_iam_policy_document.cloudfront_readonly.json
 }
 
-# Cloudfront distribution
+# CloudFront distribution
 resource "aws_cloudfront_origin_access_control" "site" {
   name                              = "site"
   origin_access_control_origin_type = "s3"

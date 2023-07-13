@@ -21,9 +21,9 @@ main() {
     exit 1
   fi
 
-  # Get Cloudfront Distribution ID
+  # Get CloudFront Distribution ID
   if distribution=$(echo "${tf_output}" | grep cloudfront-distribution-id | awk '{print $3}' | tr -d \"); then
-    echo -n "Cloudfront Distribution: ${distribution} "
+    echo -n "CloudFront Distribution: ${distribution} "
   else
     echo "Couldn't find Distribution"
     exit 1
@@ -42,7 +42,7 @@ main() {
     echo "${sync_output}"
   fi
 
-  echo "Invalidating Cloudfront Cache"
+  echo "Invalidating CloudFront Cache"
   aws cloudfront create-invalidation --distribution-id "${distribution}" --paths "/*" | jq '.Invalidation.Id, .Invalidation.Status'
 }
 

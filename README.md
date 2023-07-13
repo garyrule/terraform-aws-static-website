@@ -23,13 +23,13 @@ With support for using [Gandi](https://www.gandi.net) LiveDNS instead of Route53
 | Static File hosting | [S3](https://aws.amazon.com/s3/)                                                                       |
 | Certificate         | [ACM](https://aws.amazon.com/certificate-manager/)                                                     |
 | DNS                 | [Route 53](https://aws.amazon.com/route53/) or [Gandi LiveDNS](https://www.gandi.net/en-US/domain/dns) |
-| CDN                 | [Cloudfront](https://aws.amazon.com/cloudfront/)                                                                                         |
+| CDN                 | [CloudFront](https://aws.amazon.com/cloudfront/)                                                                                         |
 
 ![terraform-aws-static-website](./img/dia.jpeg)
 
 ## Features
 * Private s3 bucket w/ CloudFront access granted via Origin Access Control (OAC)
-* Configurable Cloudfront Distribution
+* Configurable CloudFront Distribution
 * Option to use Gandi for DNS
 
 ## Examples
@@ -104,18 +104,18 @@ With support for using [Gandi](https://www.gandi.net) LiveDNS instead of Route53
 | <a name="output_bucket-region"></a> [bucket-region](#output\_bucket-region) | Static file S3 Bucket Region |
 | <a name="output_bucket-versioning"></a> [bucket-versioning](#output\_bucket-versioning) | Static file Bucket Versioning |
 | <a name="output_certificate-validation-domain-name"></a> [certificate-validation-domain-name](#output\_certificate-validation-domain-name) | Certificate Validation, validation record FQDNs |
-| <a name="output_cloudfront-distribution-domain-name"></a> [cloudfront-distribution-domain-name](#output\_cloudfront-distribution-domain-name) | Cloudfront Distribution Domain Name |
-| <a name="output_cloudfront-distribution-http-last-modified-time"></a> [cloudfront-distribution-http-last-modified-time](#output\_cloudfront-distribution-http-last-modified-time) | Cloudfront Distribution Last Modified |
-| <a name="output_cloudfront-distribution-http-version"></a> [cloudfront-distribution-http-version](#output\_cloudfront-distribution-http-version) | Cloudfront Distribution HTTP Version |
-| <a name="output_cloudfront-distribution-id"></a> [cloudfront-distribution-id](#output\_cloudfront-distribution-id) | Cloudfront Distribution ID |
-| <a name="output_cloudfront-distribution-status"></a> [cloudfront-distribution-status](#output\_cloudfront-distribution-status) | Cloudfront Distribution Status |
-| <a name="output_cloudfront-distribution-zone-id"></a> [cloudfront-distribution-zone-id](#output\_cloudfront-distribution-zone-id) | Cloudfront Distribution Zone ID |
-| <a name="output_cloudfront-origin-access-control-id"></a> [cloudfront-origin-access-control-id](#output\_cloudfront-origin-access-control-id) | Cloudfront Origin Access Control |
+| <a name="output_cloudfront-distribution-domain-name"></a> [cloudfront-distribution-domain-name](#output\_cloudfront-distribution-domain-name) | CloudFront Distribution Domain Name |
+| <a name="output_cloudfront-distribution-http-last-modified-time"></a> [cloudfront-distribution-http-last-modified-time](#output\_cloudfront-distribution-http-last-modified-time) | CloudFront Distribution Last Modified |
+| <a name="output_cloudfront-distribution-http-version"></a> [cloudfront-distribution-http-version](#output\_cloudfront-distribution-http-version) | CloudFront Distribution HTTP Version |
+| <a name="output_cloudfront-distribution-id"></a> [cloudfront-distribution-id](#output\_cloudfront-distribution-id) | CloudFront Distribution ID |
+| <a name="output_cloudfront-distribution-status"></a> [cloudfront-distribution-status](#output\_cloudfront-distribution-status) | CloudFront Distribution Status |
+| <a name="output_cloudfront-distribution-zone-id"></a> [cloudfront-distribution-zone-id](#output\_cloudfront-distribution-zone-id) | CloudFront Distribution Zone ID |
+| <a name="output_cloudfront-origin-access-control-id"></a> [cloudfront-origin-access-control-id](#output\_cloudfront-origin-access-control-id) | CloudFront Origin Access Control |
 | <a name="output_dns-site-alias"></a> [dns-site-alias](#output\_dns-site-alias) | DNS Site Alias |
 | <a name="output_dns-site-id"></a> [dns-site-id](#output\_dns-site-id) | DNS Site ID |
 | <a name="output_dns-site-name"></a> [dns-site-name](#output\_dns-site-name) | DNS Site Name |
 | <a name="output_gandi-domain"></a> [gandi-domain](#output\_gandi-domain) | Are we a Gandi Domain Boolean |
-| <a name="output_s3_bucket_policy"></a> [s3\_bucket\_policy](#output\_s3\_bucket\_policy) | Cloudfront Origin Access Control |
+| <a name="output_s3_bucket_policy"></a> [s3\_bucket\_policy](#output\_s3\_bucket\_policy) | CloudFront Origin Access Control |
 | <a name="output_site-certificate-arn"></a> [site-certificate-arn](#output\_site-certificate-arn) | Site Certificate ARN |
 | <a name="output_site-certificate-domain-name"></a> [site-certificate-domain-name](#output\_site-certificate-domain-name) | Site Certificate domain name |
 | <a name="output_site-certificate-domain-validation-options"></a> [site-certificate-domain-validation-options](#output\_site-certificate-domain-validation-options) | Site Certificate Domain Validation Options |

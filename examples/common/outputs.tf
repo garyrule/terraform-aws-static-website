@@ -60,35 +60,35 @@ output "certificate-validation-domain-name" {
 }
 
 #---------
-# Cloudfront
+# CloudFront
 #---------
 output "cloudfront-distribution-id" {
-  description = "Cloudfront Distribution ID"
+  description = "CloudFront Distribution ID"
   value       = module.site.cloudfront-distribution-id
 }
 
 output "cloudfront-distribution-domain-name" {
-  description = "Cloudfront Distribution Domain Name"
+  description = "CloudFront Distribution Domain Name"
   value       = module.site.cloudfront-distribution-domain-name
 }
 
 output "cloudfront-distribution-zone-id" {
-  description = "Cloudfront Distribution Zone ID"
+  description = "CloudFront Distribution Zone ID"
   value       = module.site.cloudfront-distribution-zone-id
 }
 
 output "cloudfront-distribution-status" {
-  description = "Cloudfront Distribution Status"
+  description = "CloudFront Distribution Status"
   value       = module.site.cloudfront-distribution-status
 }
 
 output "cloudfront-distribution-http-version" {
-  description = "Cloudfront Distribution HTTP Version"
+  description = "CloudFront Distribution HTTP Version"
   value       = module.site.cloudfront-distribution-http-version
 }
 
 output "cloudfront-distribution-http-last-modified-time" {
-  description = "Cloudfront Distribution Last Modified"
+  description = "CloudFront Distribution Last Modified"
   value       = module.site.cloudfront-distribution-http-last-modified-time
 }
 
