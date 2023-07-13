@@ -1,4 +1,4 @@
-# tf_static_web
+# terraform-aws-static-web
 A Terraform Module to configure a static website using Amazon AWS Services
 
 Support for using [Gandi](https://www.gandi.net) LiveDNS instead of Route53
@@ -14,14 +14,13 @@ Support for using [Gandi](https://www.gandi.net) LiveDNS instead of Route53
 
 
 <!-- TOC -->
-* [tf_static_web](#tfstaticweb)
-  * [Components](#components-)
+* [terraform-aws-static-web](#terraform-aws-static-web)
+  * [Components](#components)
   * [Prerequisites](#prerequisites)
   * [Cost Example](#cost-example)
       * [Assumptions](#assumptions)
     * [AWS](#aws)
     * [Gandi](#gandi)
-  * [Notes](#notes)
   * [Examples](#examples)
   * [Requirements](#requirements)
   * [Providers](#providers)
@@ -36,7 +35,7 @@ Support for using [Gandi](https://www.gandi.net) LiveDNS instead of Route53
 * Gandi Account - *If using Gandi LiveDNS*
 
 
-![tf_static_web](./img/tf_static_web.jpeg)
+![terraform-aws-static-web](./img/dia.jpeg)
 
 
 ## Cost Example

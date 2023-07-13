@@ -11,7 +11,7 @@ terraform {
 
 ## Example using Gandi LiveDNS with all inputs
 module "site" {
-  #source                            = "git::git@github.com:garyrule/tf_static_web.git?ref=master"
+  #source                            = "git::git@github.com:garyrule/terraform-aws-static-website.git?ref=master"
   source                            = "../../"
   dns_type                          = "gandi"
   region                            = "us-east-2"
