@@ -1,24 +1,13 @@
-# terraform-aws-static-web
-A Terraform Module to configure a static website using Amazon AWS Services
+# terraform-aws-static-website
+A Terraform Module to create a static website using Amazon AWS Services.
 
 With support for using [Gandi](https://www.gandi.net) LiveDNS instead of Route53
-
-## Components
-
-| Function            | Service                                                                                                |
-|---------------------|--------------------------------------------------------------------------------------------------------|
-| Static File hosting | [S3](https://aws.amazon.com/s3/)                                                                       |
-| Certificate         | [ACM](https://aws.amazon.com/certificate-manager/)                                                     |
-| DNS                 | [Route 53](https://aws.amazon.com/route53/) or [Gandi LiveDNS](https://www.gandi.net/en-US/domain/dns) |
-| CDN                 | [Cloudfront](https://aws.amazon.com/cloudfront/)                                                                                         |
-
-
 <!-- TOC -->
-* [terraform-aws-static-web](#terraform-aws-static-web)
+* [terraform-aws-static-website](#terraform-aws-static-website)
   * [Components](#components)
-  * [Prerequisites](#prerequisites)
-  * [Components](#components-)
+  * [Features](#features)
   * [Examples](#examples)
+* [terraform-docs](#terraform-docs)
   * [Requirements](#requirements)
   * [Providers](#providers)
   * [Resources](#resources)
@@ -26,23 +15,27 @@ With support for using [Gandi](https://www.gandi.net) LiveDNS instead of Route53
   * [Outputs](#outputs)
 <!-- TOC -->
 
-## Prerequisites
-* AWS Account
-* Route53 Zone - *If using Route53*
-* Gandi Account - *If using Gandi LiveDNS*
-
-
 ## Components
-![terraform-aws-static-web](./img/dia.jpeg)
+| Function            | Service                                                                                                |
+|---------------------|--------------------------------------------------------------------------------------------------------|
+| Static File hosting | [S3](https://aws.amazon.com/s3/)                                                                       |
+| Certificate         | [ACM](https://aws.amazon.com/certificate-manager/)                                                     |
+| DNS                 | [Route 53](https://aws.amazon.com/route53/) or [Gandi LiveDNS](https://www.gandi.net/en-US/domain/dns) |
+| CDN                 | [Cloudfront](https://aws.amazon.com/cloudfront/)                                                                                         |
 
+![terraform-aws-static-website](./img/dia.jpeg)
 
-
+## Features
+* Private s3 bucket w/ CloudFront access granted via Origin Access Control (OAC)
+* Configurable Cloudfront Distribution
+* Option to use Gandi for DNS
 
 ## Examples
 * [AWS Only Example](./examples/aws-only)
 * [Gandi LiveDNS Example](./examples/gandi-livedns)
 
 <!-- BEGIN_TF_DOCS -->
+# terraform-docs
 ## Requirements
 
 | Name | Version |
@@ -50,7 +43,6 @@ With support for using [Gandi](https://www.gandi.net) LiveDNS instead of Route53
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.4.6, < 2.0.0 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 5.7.0 |
 | <a name="requirement_gandi"></a> [gandi](#requirement\_gandi) | = 2.2.3 |
-| <a name="requirement_random"></a> [random](#requirement\_random) | 3.5.1 |
 
 ## Providers
 
@@ -59,7 +51,6 @@ With support for using [Gandi](https://www.gandi.net) LiveDNS instead of Route53
 | <a name="provider_aws"></a> [aws](#provider\_aws) | 5.7.0 |
 | <a name="provider_aws.use1"></a> [aws.use1](#provider\_aws.use1) | 5.7.0 |
 | <a name="provider_gandi"></a> [gandi](#provider\_gandi) | 2.2.3 |
-| <a name="provider_random"></a> [random](#provider\_random) | 3.5.1 |
 
 ## Resources
 
@@ -77,7 +68,6 @@ With support for using [Gandi](https://www.gandi.net) LiveDNS instead of Route53
 | [aws_s3_bucket_versioning.site](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_versioning) | resource |
 | [gandi_livedns_record.site](https://registry.terraform.io/providers/go-gandi/gandi/2.2.3/docs/resources/livedns_record) | resource |
 | [gandi_livedns_record.site-validation](https://registry.terraform.io/providers/go-gandi/gandi/2.2.3/docs/resources/livedns_record) | resource |
-| [random_string.referer](https://registry.terraform.io/providers/hashicorp/random/3.5.1/docs/resources/string) | resource |
 | [aws_iam_policy_document.cloudfront_readonly](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 
 ## Inputs

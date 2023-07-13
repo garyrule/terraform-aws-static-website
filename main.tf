@@ -10,10 +10,6 @@ terraform {
       source  = "go-gandi/gandi"
       version = "= 2.2.3"
     }
-    random = {
-      source  = "hashicorp/random"
-      version = "3.5.1"
-    }
   }
 }
 
@@ -55,14 +51,7 @@ locals {
   }
 }
 
-resource "random_string" "referer" {
-  length           = 96
-  special          = true
-  override_special = "!#&$*"
-}
-
 # Bucket Policy Document
-
 # Allow access to CloudFront ARN via Origin Access Control
 data "aws_iam_policy_document" "cloudfront_readonly" {
   statement {
