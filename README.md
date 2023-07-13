@@ -28,7 +28,7 @@ With support for using [Gandi](https://www.gandi.net) LiveDNS instead of Route53
 ![terraform-aws-static-website](./img/dia.jpeg)
 
 ## Features
-* Private s3 bucket w/ CloudFront access granted via Origin Access Control (OAC)
+* Private s3 bucket w/ CloudFront access granted via [Origin Access Control (OAC)](https://aws.amazon.com/blogs/networking-and-content-delivery/amazon-cloudfront-introduces-origin-access-control-oac/)
 * Configurable CloudFront Distribution
 * Option to use Gandi for DNS
 
