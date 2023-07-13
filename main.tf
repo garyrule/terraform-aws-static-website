@@ -52,32 +52,6 @@ locals {
   }
 }
 
-# Bucket Policy Document
-# Allow access to CloudFront ARN via Origin Access Control
-data "aws_iam_policy_document" "cloudfront_readonly" {
-  statement {
-    principals {
-      type        = "Service"
-      identifiers = ["cloudfront.amazonaws.com"]
-    }
-
-    actions = [
-      "s3:GetObject",
-    ]
-
-    resources = [
-      aws_s3_bucket.site.arn,
-      "${aws_s3_bucket.site.arn}/*",
-    ]
-
-    condition {
-      test     = "StringEquals"
-      variable = "AWS:SourceArn"
-      values   = [aws_cloudfront_distribution.site.arn]
-    }
-  }
-}
-
 # ACM Certificate
 resource "aws_acm_certificate" "site" {
   provider          = aws.use1
@@ -164,6 +138,33 @@ resource "gandi_livedns_record" "site-validation" {
 }
 
 # S3 Bucket, and config, for holding static files
+
+# Bucket Policy Document
+data "aws_iam_policy_document" "cloudfront_readonly" {
+  statement {
+    principals {
+      type        = "Service"
+      identifiers = ["cloudfront.amazonaws.com"]
+    }
+
+    actions = [
+      "s3:GetObject",
+    ]
+
+    resources = [
+      aws_s3_bucket.site.arn,
+      "${aws_s3_bucket.site.arn}/*",
+    ]
+
+    condition {
+      test     = "StringEquals"
+      variable = "AWS:SourceArn"
+      values   = [aws_cloudfront_distribution.site.arn]
+    }
+  }
+}
+
+
 resource "aws_s3_bucket" "site" {
   provider      = aws
   bucket        = var.website_hostname
