@@ -4,6 +4,10 @@ set -e
 main() {
   syntaxCheck "${@}"
 
+  echo "This script is provided as an example and will work for a deployment example included with this repository"
+  echo "HOWEVER: It may not work for your specific needs and evaluating that is left to you"
+  echo
+
   echo -n "Source dir: ${source_dir} "
 
   # Get terraform outputs
