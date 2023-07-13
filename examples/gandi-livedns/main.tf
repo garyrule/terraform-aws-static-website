@@ -4,7 +4,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.5.0"
+      version = "~> 5.7.0"
     }
   }
 }
@@ -22,6 +22,5 @@ module "site" {
   website_hostname                  = var.website_hostname
   gandi_key                         = var.gandi_key
   gandi_sharing_id                  = var.gandi_sharing_id
-  # referer_header                    =  "something" # Recommend letting the module generate this
 }
 

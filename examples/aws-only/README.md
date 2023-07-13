@@ -30,14 +30,15 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.5.0"
+      version = "~> 5.7.0"
     }
   }
 }
 
 ## Example All-AWS w/ mimimum inputs
 module "site" {
-  source           = "git::git@github.com:garyrule/tf_static_web.git?ref=master"
+  #source           = "git::git@github.com:garyrule/tf_static_web.git?ref=master"
+  source           = "../../"
   route53_zone_id  = var.route53_zone_id
   website_hostname = var.website_hostname
 }
@@ -53,7 +54,6 @@ module "site" {
 
 | Name | Description |
 |------|-------------|
-| <a name="output_bucket-endpoint"></a> [bucket-endpoint](#output\_bucket-endpoint) | Static file Bucket Website Endpoint |
 | <a name="output_bucket-hosted-zone-id"></a> [bucket-hosted-zone-id](#output\_bucket-hosted-zone-id) | Static file Bucket Zone ID |
 | <a name="output_bucket-id"></a> [bucket-id](#output\_bucket-id) | Static file Bucket ID |
 | <a name="output_bucket-region"></a> [bucket-region](#output\_bucket-region) | Static file Bucket Region |
@@ -68,7 +68,6 @@ module "site" {
 | <a name="output_dns-site-alias"></a> [dns-site-alias](#output\_dns-site-alias) | DNS Site Alias |
 | <a name="output_dns-site-id"></a> [dns-site-id](#output\_dns-site-id) | DNS Site ID |
 | <a name="output_dns-site-name"></a> [dns-site-name](#output\_dns-site-name) | DNS Site Name |
-| <a name="output_referer-header-value"></a> [referer-header-value](#output\_referer-header-value) | Referer header value Cloudfront passes to the S3 bucket |
 | <a name="output_site-certificate-arn"></a> [site-certificate-arn](#output\_site-certificate-arn) | Site Certificate ARN |
 | <a name="output_site-certificate-domain-name"></a> [site-certificate-domain-name](#output\_site-certificate-domain-name) | Site Certificate domain name |
 | <a name="output_site-certificate-domain-validation-options"></a> [site-certificate-domain-validation-options](#output\_site-certificate-domain-validation-options) | Site Certificate Domain Validation Options |

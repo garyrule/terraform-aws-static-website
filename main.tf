@@ -4,7 +4,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.5.0"
+      version = "~> 5.7.0"
     }
     gandi = {
       source  = "go-gandi/gandi"
@@ -36,10 +36,6 @@ locals {
   # We'll set gandi_zone to true if var.dns_type has a value of "gandi"
   gandi_zone = var.dns_type == "gandi" ? true : false
 
-  # The value for the Referer header will either be passed as a variable
-  #  or we'll generate one and use that
-  referer_header = var.referer_header == "" ? random_string.referer.result : var.referer_header
-
   # Break up the hostname
   fqdn_bits   = split(".", var.website_hostname)
   fqdn_length = length(local.fqdn_bits)
@@ -66,11 +62,13 @@ resource "random_string" "referer" {
 }
 
 # Bucket Policy Document
-data "aws_iam_policy_document" "get-all-with-header" {
+
+# Allow access to CloudFront ARN via Origin Access Control
+data "aws_iam_policy_document" "cloudfront_readonly" {
   statement {
     principals {
-      type        = "AWS"
-      identifiers = ["*"]
+      type        = "Service"
+      identifiers = ["cloudfront.amazonaws.com"]
     }
 
     actions = [
@@ -82,11 +80,10 @@ data "aws_iam_policy_document" "get-all-with-header" {
       "${aws_s3_bucket.site.arn}/*",
     ]
 
-    # Correct Referer header required to GetObject
     condition {
       test     = "StringEquals"
-      variable = "aws:Referer"
-      values   = [local.referer_header]
+      variable = "AWS:SourceArn"
+      values   = [aws_cloudfront_distribution.site.arn]
     }
   }
 }
@@ -184,44 +181,6 @@ resource "aws_s3_bucket" "site" {
   tags          = local.tags
 }
 
-resource "aws_s3_bucket_policy" "site" {
-  provider   = aws
-  depends_on = [aws_s3_bucket_public_access_block.site-grant]
-  bucket     = aws_s3_bucket.site.id
-  policy     = data.aws_iam_policy_document.get-all-with-header.json
-}
-
-resource "aws_s3_bucket_website_configuration" "site" {
-  provider = aws
-  bucket   = aws_s3_bucket.site.id
-
-  index_document {
-    suffix = "index.html"
-  }
-
-  error_document {
-    key = "error.html"
-  }
-}
-
-resource "aws_s3_bucket_cors_configuration" "site" {
-  provider = aws
-  bucket   = aws_s3_bucket.site.id
-
-  cors_rule {
-    allowed_headers = ["Content-Length"]
-    allowed_methods = ["GET", "HEAD"]
-    allowed_origins = ["https://${var.website_hostname}"]
-    expose_headers  = ["ETag"]
-    max_age_seconds = 3000
-  }
-
-  cors_rule {
-    allowed_methods = ["GET"]
-    allowed_origins = ["*"]
-  }
-}
-
 resource "aws_s3_bucket_versioning" "site" {
   count    = var.bucket_versioning ? 1 : 0
   provider = aws
@@ -231,62 +190,34 @@ resource "aws_s3_bucket_versioning" "site" {
   }
 }
 
-resource "aws_s3_bucket_ownership_controls" "site" {
+resource "aws_s3_bucket_policy" "site" {
   provider = aws
   bucket   = aws_s3_bucket.site.id
-  rule {
-    object_ownership = "BucketOwnerPreferred"
-  }
+  policy   = data.aws_iam_policy_document.cloudfront_readonly.json
 }
-
-resource "aws_s3_bucket_public_access_block" "site-grant" {
-  provider                = aws
-  bucket                  = aws_s3_bucket.site.id
-  block_public_acls       = false
-  block_public_policy     = false
-  ignore_public_acls      = false
-  restrict_public_buckets = false
-}
-
-resource "aws_s3_bucket_acl" "site" {
-  provider = aws
-  depends_on = [
-    aws_s3_bucket_ownership_controls.site,
-    aws_s3_bucket_public_access_block.site-grant,
-  ]
-
-  bucket = aws_s3_bucket.site.id
-  acl    = "public-read"
-}
-
 
 # Cloudfront distribution
+resource "aws_cloudfront_origin_access_control" "site" {
+  name                              = "site"
+  origin_access_control_origin_type = "s3"
+  signing_behavior                  = "always"
+  signing_protocol                  = "sigv4"
+}
+
 resource "aws_cloudfront_distribution" "site" {
-  provider = aws
-
-  origin {
-    domain_name = aws_s3_bucket_website_configuration.site.website_endpoint
-    origin_id   = "S3-${var.website_hostname}"
-
-    custom_header {
-      name  = "Referer"
-      value = local.referer_header
-    }
-
-    custom_origin_config {
-      http_port              = 80
-      https_port             = 443
-      origin_protocol_policy = "http-only"
-      origin_ssl_protocols   = ["TLSv1.2"]
-    }
-  }
-
+  provider            = aws
   enabled             = true
   is_ipv6_enabled     = true
   default_root_object = "index.html"
   price_class         = var.cloudfront_price_class
+  aliases             = [var.website_hostname]
 
-  aliases = [var.website_hostname]
+  origin {
+    #domain_name              = aws_s3_bucket_website_configuration.site.website_endpoint
+    domain_name              = aws_s3_bucket.site.bucket_regional_domain_name
+    origin_id                = "S3-${var.website_hostname}"
+    origin_access_control_id = aws_cloudfront_origin_access_control.site.id
+  }
 
   custom_error_response {
     error_caching_min_ttl = 0
@@ -318,7 +249,8 @@ resource "aws_cloudfront_distribution" "site" {
 
   restrictions {
     geo_restriction {
-      restriction_type = "none"
+      restriction_type = var.cloudfront_geo_restriction_type
+      locations        = var.cloudfront_geo_locations
     }
   }
 
@@ -327,5 +259,6 @@ resource "aws_cloudfront_distribution" "site" {
     minimum_protocol_version = var.cloudfront_viewer_security_policy
     ssl_support_method       = var.cloudfront_viewer_ssl_support_method
   }
+
   tags = local.tags
 }

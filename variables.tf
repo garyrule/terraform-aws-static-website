@@ -96,9 +96,20 @@ variable "cloudfront_viewer_ssl_support_method" {
   default     = "sni-only"
   validation {
     condition     = var.cloudfront_viewer_ssl_support_method == "sni-only" || var.cloudfront_viewer_ssl_support_method == "vip"
-    error_message = "The Variable \"clodfront_viewer_ssl_support_method\" is invalid. It must be set to either \"sni-only\" or \"vip\""
+    error_message = "The Variable \"cloudfront_viewer_ssl_support_method\" is invalid. It must be set to either \"sni-only\" or \"vip\""
   }
+}
 
+variable "cloudfront_geo_restriction_type" {
+  description = ""
+  type        = string
+  default     = "none"
+}
+
+variable "cloudfront_geo_locations" {
+  description = ""
+  type        = list(string)
+  default     = []
 }
 
 variable "force_destroy_bucket" {
@@ -111,10 +122,4 @@ variable "bucket_versioning" {
   type        = bool
   description = "S3 Bucket Versioning?"
   default     = false
-}
-
-variable "referer_header" {
-  type        = string
-  description = "Shared secret that Cloudfront will pass to S3 in order to read the bucket contents"
-  default     = ""
 }

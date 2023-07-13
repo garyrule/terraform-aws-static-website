@@ -11,11 +11,6 @@ output "bucket-region" {
   value       = aws_s3_bucket.site.region
 }
 
-output "bucket-endpoint" {
-  description = "Static file S3 Bucket Website Endpoint"
-  value       = aws_s3_bucket_website_configuration.site.website_endpoint
-}
-
 output "bucket-hosted-zone-id" {
   description = "Static file Bucket Zone ID"
   value       = aws_s3_bucket.site.hosted_zone_id
@@ -24,6 +19,11 @@ output "bucket-hosted-zone-id" {
 output "bucket-versioning" {
   description = "Static file Bucket Versioning"
   value       = aws_s3_bucket.site.versioning
+}
+
+output "s3_bucket_policy" {
+  description = "Cloudfront Origin Access Control"
+  value       = aws_s3_bucket_policy.site.policy
 }
 
 #---------
@@ -97,6 +97,11 @@ output "cloudfront-distribution-http-last-modified-time" {
   value       = aws_cloudfront_distribution.site.last_modified_time
 }
 
+output "cloudfront-origin-access-control-id" {
+  description = "Cloudfront Origin Access Control"
+  value       = aws_cloudfront_origin_access_control.site.id
+}
+
 #---------
 # DNS
 #---------
@@ -118,9 +123,4 @@ output "dns-site-alias" {
 output "gandi-domain" {
   description = "Are we a Gandi Domain Boolean "
   value       = local.gandi_zone
-}
-
-output "referer-header-value" {
-  description = "Referer header value Cloudfront passes to the S3 bucket"
-  value       = local.referer_header
 }
