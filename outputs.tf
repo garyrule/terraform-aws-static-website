@@ -21,7 +21,7 @@ output "bucket-versioning" {
   value       = aws_s3_bucket.site.versioning
 }
 
-output "s3_bucket_policy" {
+output "s3-bucket-policy" {
   description = "CloudFront Origin Access Control"
   value       = aws_s3_bucket_policy.site.policy
 }
