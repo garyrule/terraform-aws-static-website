@@ -4,8 +4,10 @@ set -e
 main() {
   syntaxCheck "${@}"
 
-  echo "This script is provided as a demonstration and will work for a deployment example included with this repository"
-  echo "HOWEVER: It may not work for your specific needs and evaluating that is left to you"
+  bucket_search="^bucket-website-id"
+  cloudfront_search="cloudfront-distribution-id"
+
+  echo "This script is provided as a demonstration only"
   echo
 
   echo -n "Source dir: ${source_dir} "
@@ -14,7 +16,7 @@ main() {
   tf_output=$(terraform output)
 
   # Get Bucket ID
-  if bucket_id=$(echo "${tf_output}" | grep bucket-id | awk '{print $3}' | tr -d \"); then
+  if bucket_id=$(echo "${tf_output}" | grep "${bucket_search}" | awk '{print $3}' | tr -d \"); then
     echo -n "Bucket ID: ${bucket_id} "
   else
     echo "Unable to find Bucket ID"
@@ -22,7 +24,7 @@ main() {
   fi
 
   # Get CloudFront Distribution ID
-  if distribution=$(echo "${tf_output}" | grep cloudfront-distribution-id | awk '{print $3}' | tr -d \"); then
+  if distribution=$(echo "${tf_output}" | grep "${cloudfront_search}" | awk '{print $3}' | tr -d \"); then
     echo -n "CloudFront Distribution: ${distribution} "
   else
     echo "Couldn't find Distribution"
@@ -40,10 +42,13 @@ main() {
   else
     echo "Copying files from ${source_dir} to s3://${bucket_id}"
     echo "${sync_output}"
+    if terraform output |grep versioning |grep s3-bucket-static-versioning-enabled |awk '{print $3}';then
+      echo "Versioning is enabled; no need to invalidate CloudFront cache"
+    else
+      echo "Versioning is not enabled; invalidating CloudFront cache"
+      aws cloudfront create-invalidation --distribution-id "${distribution}" --paths "/*" | jq '.Invalidation.Id, .Invalidation.Status'
+    fi
   fi
-
-  echo "Invalidating CloudFront Cache"
-  aws cloudfront create-invalidation --distribution-id "${distribution}" --paths "/*" | jq '.Invalidation.Id, .Invalidation.Status'
 }
 
 syntaxCheck() {

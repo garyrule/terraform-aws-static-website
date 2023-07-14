@@ -15,9 +15,21 @@ sections:
 content: |-
   {{ .Header }}
 
-  ## Example using Gandi LiveDNS
+  {{ include "../../doc/INSTRUCTIONS.md" }}
+  {{ include "../../doc/VALIDATION_CHECK.md" }}
+
+  ## Example
+  ### Gandi LiveDNS Minimal Example
+  This is the bare minimum configuration need to deploy a website using Gandi
   ```hcl
   {{ include "main.tf" }}
+  ```
+
+  ### Gandi LiveDNS Full Example
+  Not every option is passed but this will provide an example of a full configuration.
+  ### Gandi LiveDNS
+  ```hcl
+  {{ include ".example.tf" }}
   ```
   {{ .Providers }}
   {{ .Inputs }}

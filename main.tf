@@ -4,7 +4,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.7.0"
+      version = "~> 5.8.0"
     }
     gandi = {
       source  = "go-gandi/gandi"
@@ -29,22 +29,51 @@ provider "aws" {
 }
 
 locals {
-  # We'll set gandi_zone to true if var.dns_type has a value of "gandi"
+  #------------------------------
+  # Input Validation
+  #------------------------------
+  # If the user specifies a value for var.dns_type == "aws" then the
+  # variables var.route53_zone_id and var.website_hostname must not be empty.
+  #
+  # Similarly, if the user specifies a value for var.dns_type == "gandi" then the
+  # variables var.gandi_key and var.website_hostname must not be empty.
+
+  # Unfortunately I don't know how to effectively use this to halt the apply process.
+  # However, the output can be evaluated by some other mechanism prior to an apply.
+  # See the doc/VALIDATION_CHECK.md for more information.
+  validate_inputs = (
+    var.dns_type == "aws" && var.route53_zone_id != "" && var.website_hostname != ""
+    ) || (
+    var.dns_type == "gandi" && var.gandi_key != "" && var.website_hostname != ""
+  )
+
+  # Are we using Gandi or AWS?
   gandi_zone = var.dns_type == "gandi" ? true : false
 
-  # Break up the hostname
+  # Buckets, Policies, etc. don't allow dots in names
+  website_name_dashed = replace(var.website_hostname, ".", "-")
+
+  # Break up the hostname and create hostname and domain
   fqdn_bits   = split(".", var.website_hostname)
   fqdn_length = length(local.fqdn_bits)
   hostname    = slice(local.fqdn_bits, 0, 1)[0]                         # First element is hostname
   domain      = join(".", slice(local.fqdn_bits, 1, local.fqdn_length)) # Remainder is domain
 
-  # Coalesce data for certificate and DNS
-  dns-site-id = coalescelist(aws_route53_record.site[*].id, gandi_livedns_record.site[*].id)
-  # Route 53 Alias or Gandi Values
-  dns-site-alias                      = coalescelist(aws_route53_record.site[*].alias, gandi_livedns_record.site[*].values)
-  dns-site-name                       = one(coalescelist(aws_route53_record.site[*].name, gandi_livedns_record.site[*].name))
-  certificate_validation_arn          = one(coalescelist(aws_acm_certificate_validation.site-aws[*].certificate_arn, aws_acm_certificate_validation.site-gandi[*].certificate_arn))
-  certificate_validation_record_fqdns = one(coalescelist(aws_acm_certificate_validation.site-aws[*].validation_record_fqdns, aws_acm_certificate_validation.site-gandi[*].validation_record_fqdns))
+  # Grab the website DNS record ID.
+  website-domain-resource-id = coalescelist(
+    aws_route53_record.site[*].id,
+    gandi_livedns_record.site[*].id
+  )
+
+  # Build website-domain-target
+  route53-website-alias = [for record in aws_route53_record.site : lookup(record.alias[0], "name", null)]
+  gandi-website-values  = tolist(length(gandi_livedns_record.site) > 0 ? element(gandi_livedns_record.site[*].values, 0) : [])
+  website-domain-target = coalescelist(local.route53-website-alias, local.gandi-website-values)
+  website-dns-record    = one(coalescelist(aws_route53_record.site[*].name, gandi_livedns_record.site[*].name))
+
+  certificate_validation_arn         = one(coalescelist(aws_acm_certificate_validation.site-aws[*].certificate_arn, aws_acm_certificate_validation.site-gandi[*].certificate_arn))
+  bucket_cloudfront_logs_id          = one(aws_s3_bucket.cloudfront_logs[*].id)
+  bucket_cloudfront_logs_domain_name = one(aws_s3_bucket.cloudfront_logs[*].bucket_domain_name)
 
   # Tags
   tags = {
@@ -67,22 +96,22 @@ resource "aws_acm_certificate" "site" {
 # We'll use either Gandi or AWS records depending on the value of local.gandi_zone.
 resource "aws_acm_certificate_validation" "site-aws" {
   provider                = aws.use1
-  count                   = local.gandi_zone ? 1 : 0
+  count                   = local.gandi_zone == true ? 0 : 1
   certificate_arn         = aws_acm_certificate.site.arn
   validation_record_fqdns = [for record in aws_route53_record.site-validation : record.fqdn]
 }
 
 resource "aws_acm_certificate_validation" "site-gandi" {
   provider                = aws.use1
-  count                   = local.gandi_zone ? 0 : 1
+  count                   = local.gandi_zone == true ? 1 : 0
   certificate_arn         = aws_acm_certificate.site.arn
-  validation_record_fqdns = [for record in gandi_livedns_record.site-validation : record.name]
+  validation_record_fqdns = [for record in gandi_livedns_record.site-validation : "${record.name}.${local.domain}"]
 }
 
 # DNS
 # Create AWS Route 53 records if local.gandi_zone is false
 resource "aws_route53_record" "site" {
-  count   = local.gandi_zone ? 0 : 1
+  count   = local.gandi_zone == true ? 0 : 1
   zone_id = var.route53_zone_id
   name    = var.website_hostname
   type    = "A"
@@ -100,7 +129,7 @@ resource "aws_route53_record" "site-validation" {
       name   = option.resource_record_name
       record = option.resource_record_value
       type   = option.resource_record_type
-    } if !local.gandi_zone
+    } if local.gandi_zone == false
   }
 
   allow_overwrite = true
@@ -113,8 +142,8 @@ resource "aws_route53_record" "site-validation" {
 
 # Create Gandi LiveDNS records if local.gandi_zone is true
 resource "gandi_livedns_record" "site" {
-  count  = local.gandi_zone ? 1 : 0
-  name   = local.hostname
+  count  = local.gandi_zone == true ? 1 : 0
+  name   = local.hostname # Gandi doesn't use/store records fully qualified
   zone   = local.domain
   type   = "CNAME"
   ttl    = 600
@@ -127,9 +156,10 @@ resource "gandi_livedns_record" "site-validation" {
       name   = option.resource_record_name
       record = option.resource_record_value
       type   = option.resource_record_type
-    } if local.gandi_zone
+    } if local.gandi_zone == true
   }
 
+  # Gandi doesn't store the records fully qualified
   name   = trimsuffix(each.value.name, ".${local.domain}.")
   zone   = local.domain
   ttl    = 600
@@ -137,9 +167,10 @@ resource "gandi_livedns_record" "site-validation" {
   values = [each.value.record]
 }
 
-# S3 Bucket, and config, for holding static files
-
-# Bucket Policy Document
+#------------------------------
+# S3 Bucket for Static Assets
+#------------------------------
+# Bucket Policy Document for static assets access
 data "aws_iam_policy_document" "cloudfront_readonly" {
   statement {
     principals {
@@ -149,6 +180,8 @@ data "aws_iam_policy_document" "cloudfront_readonly" {
 
     actions = [
       "s3:GetObject",
+      "s3:GetObjectVersion",
+      "s3:ListBucket",
     ]
 
     resources = [
@@ -164,44 +197,165 @@ data "aws_iam_policy_document" "cloudfront_readonly" {
   }
 }
 
-
 resource "aws_s3_bucket" "site" {
-  provider      = aws
-  bucket        = var.website_hostname
-  force_destroy = var.force_destroy_bucket
+  bucket        = local.website_name_dashed
+  force_destroy = var.bucket_website_force_destroy
   tags          = local.tags
 }
 
+resource "aws_s3_bucket_server_side_encryption_configuration" "site" {
+  #bucket = local.website_name_dashed
+  bucket = aws_s3_bucket.site.id
+  rule {
+    # Always set the bucket_key_enabled value
+    bucket_key_enabled = var.bucket_website_key_enabled
+
+    # Only set the algorithm and KMS key ID if a KMS key ID is provided
+    dynamic "apply_server_side_encryption_by_default" {
+      for_each = var.bucket_website_sse_algo == "aws:kms" ? [1] : []
+      content {
+        sse_algorithm     = var.bucket_website_sse_algo
+        kms_master_key_id = var.bucket_website_sse_kms_key_id
+      }
+    }
+    # Otherwise, set the algorithm to AES256
+    dynamic "apply_server_side_encryption_by_default" {
+      for_each = var.bucket_website_sse_algo == "aws:kms" ? [] : [1]
+      content {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
+}
+
 resource "aws_s3_bucket_versioning" "site" {
-  count    = var.bucket_versioning ? 1 : 0
-  provider = aws
-  bucket   = aws_s3_bucket.site.id
+  count  = var.bucket_website_versioning ? 1 : 0
+  bucket = aws_s3_bucket.site.id
   versioning_configuration {
     status = "Enabled"
   }
 }
 
 resource "aws_s3_bucket_policy" "site" {
-  provider = aws
-  bucket   = aws_s3_bucket.site.id
-  policy   = data.aws_iam_policy_document.cloudfront_readonly.json
+  bucket = aws_s3_bucket.site.id
+  policy = var.bucket_website_policy == "" ? data.aws_iam_policy_document.cloudfront_readonly.json : var.bucket_website_policy
+}
+
+##------------------------------
+## S3 Bucket for Cloudfront Logs
+##------------------------------
+resource "aws_s3_bucket" "cloudfront_logs" {
+  count         = var.cloudfront_logging ? 1 : 0
+  bucket        = "${local.website_name_dashed}-logging"
+  force_destroy = var.bucket_cloudfront_logs_force_destroy
+  tags          = local.tags
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "cloudfront_logs" {
+  count  = var.cloudfront_logging ? 1 : 0
+  bucket = aws_s3_bucket.cloudfront_logs[0].id
+  rule {
+    # Always set the bucket_key_enabled value
+    bucket_key_enabled = var.bucket_cloudfront_logs_key_enabled
+
+    # Only set the algorithm and KMS key ID if a KMS key ID is provided
+    dynamic "apply_server_side_encryption_by_default" {
+      for_each = var.bucket_cloudfront_logs_sse_algo == "aws:kms" ? [1] : []
+      content {
+        sse_algorithm     = var.bucket_cloudfront_logs_sse_algo
+        kms_master_key_id = var.bucket_cloudfront_logs_sse_kms_key_id
+      }
+    }
+    # Otherwise, set the algorithm to AES256
+    dynamic "apply_server_side_encryption_by_default" {
+      for_each = var.bucket_cloudfront_logs_sse_algo == "aws:kms" ? [] : [1]
+      content {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
+}
+
+resource "aws_s3_bucket_versioning" "cloudfront_logs" {
+  count  = var.bucket_cloudfront_logs_versioning ? 1 : 0
+  bucket = one(aws_s3_bucket.cloudfront_logs[*].id)
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_ownership_controls" "cloudfront_logs" {
+  count  = var.cloudfront_logging ? 1 : 0
+  bucket = local.bucket_cloudfront_logs_id
+  rule {
+    object_ownership = "BucketOwnerPreferred"
+  }
+}
+resource "aws_s3_bucket_acl" "cloudfront_logs" {
+  count  = var.cloudfront_logging ? 1 : 0
+  bucket = local.bucket_cloudfront_logs_id
+  acl    = "private"
+
+  depends_on = [
+    aws_s3_bucket.cloudfront_logs,
+    aws_s3_bucket_ownership_controls.cloudfront_logs,
+  ]
 }
 
 # CloudFront distribution
-resource "aws_cloudfront_origin_access_control" "site" {
-  name                              = "site"
-  origin_access_control_origin_type = "s3"
-  signing_behavior                  = "always"
-  signing_protocol                  = "sigv4"
+resource "aws_cloudfront_cache_policy" "site" {
+  name        = local.website_name_dashed
+  min_ttl     = var.cloudfront_cache_min_ttl
+  default_ttl = var.cloudfront_cache_default_ttl
+  max_ttl     = var.cloudfront_cache_max_ttl
+
+  parameters_in_cache_key_and_forwarded_to_origin {
+    cookies_config {
+      cookie_behavior = var.cloudfront_cache_policy_cookie_behavior
+      dynamic "cookies" {
+        for_each = length(var.cloudfront_cache_policy_cookies) > 0 ? [var.cloudfront_cache_policy_cookies] : []
+        content {
+          items = cookies.value
+        }
+      }
+    }
+    headers_config {
+      header_behavior = var.cloudfront_cache_policy_header_behavior
+      dynamic "headers" {
+        for_each = length(var.cloudfront_cache_policy_headers) > 0 ? [var.cloudfront_cache_policy_headers] : []
+        content {
+          items = headers.value
+        }
+      }
+    }
+    query_strings_config {
+      query_string_behavior = var.cloudfront_cache_policy_query_string_behavior
+      dynamic "query_strings" {
+        for_each = length(var.cloudfront_cache_policy_query_strings) > 0 ? [var.cloudfront_cache_policy_query_strings] : []
+        content {
+          items = query_strings.value
+        }
+      }
+    }
+  }
 }
 
 resource "aws_cloudfront_distribution" "site" {
-  provider            = aws
-  enabled             = true
+  enabled             = var.cloudfront_enabled
   is_ipv6_enabled     = true
   default_root_object = "index.html"
   price_class         = var.cloudfront_price_class
   aliases             = [var.website_hostname]
+  http_version        = var.cloudfront_maximum_http_version
+
+  dynamic "logging_config" {
+    for_each = var.cloudfront_logging ? [1] : []
+    content {
+      bucket          = local.bucket_cloudfront_logs_domain_name
+      prefix          = var.cloudfront_logging_prefix == "" ? "${local.website_name_dashed}/" : var.cloudfront_logging_prefix
+      include_cookies = var.cloudfront_logging_cookies
+    }
+  }
 
   origin {
     domain_name              = aws_s3_bucket.site.bucket_regional_domain_name
@@ -217,30 +371,18 @@ resource "aws_cloudfront_distribution" "site" {
   }
 
   default_cache_behavior {
-    allowed_methods  = var.cloudfront_cache_allowed_methods
-    cached_methods   = var.cloudfront_cached_methods
-    target_origin_id = "S3-${var.website_hostname}"
-
-    forwarded_values {
-      query_string = false
-
-      cookies {
-        forward = "none"
-      }
-    }
-
+    allowed_methods        = var.cloudfront_cache_allowed_methods
+    cached_methods         = var.cloudfront_cached_methods
+    target_origin_id       = "S3-${var.website_hostname}"
+    compress               = var.cloudfront_cache_compress
     viewer_protocol_policy = "redirect-to-https"
-
-    min_ttl     = var.cloudfront_min_ttl
-    default_ttl = var.cloudfront_default_ttl
-    max_ttl     = var.cloudfront_max_ttl
-    compress    = true
+    cache_policy_id        = aws_cloudfront_cache_policy.site.id
   }
 
   restrictions {
     geo_restriction {
       restriction_type = var.cloudfront_geo_restriction_type
-      locations        = var.cloudfront_geo_locations
+      locations        = var.cloudfront_geo_restriction_locations
     }
   }
 
@@ -251,4 +393,11 @@ resource "aws_cloudfront_distribution" "site" {
   }
 
   tags = local.tags
+}
+
+resource "aws_cloudfront_origin_access_control" "site" {
+  name                              = local.website_name_dashed
+  origin_access_control_origin_type = "s3"
+  signing_behavior                  = "always"
+  signing_protocol                  = "sigv4"
 }
