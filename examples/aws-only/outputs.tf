@@ -1,1 +1,1 @@
-../common/outputs.tf
+../../example-files/outputs.tf

@@ -3,20 +3,28 @@ repos:
     rev: "v0.16.0"
     hooks:
     - id: terraform-docs-go
+    - id: terraform-docs-go
+      args: ["examples/aws-only"]
+    - id: terraform-docs-go
+      args: ["examples/gandi-livedns"]
 
   - repo: https://github.com/gruntwork-io/pre-commit
     rev: "v0.1.22"
     hooks:
     - id: terraform-fmt
       args: ['-recursive']
+    - id: terraform-fmt
+      args: ['examples/aws-only/.example.tf']
+    - id: terraform-fmt
+      args: ['examples/gandi-livedns/.example.tf']
     - id: terraform-validate
-      exclude: 'examples'
+      exclude: 'example'
 
   - repo: https://github.com/antonbabenko/pre-commit-terraform
     rev: "v1.81.0" # Get the latest from: https://github.com/antonbabenko/pre-commit-terraform/releases
     hooks:
     - id: terraform_tflint
-      exclude: 'examples/common'
+      exclude: 'example'
       args:
       - --hook-config=--delegate-chdir
 
@@ -25,6 +33,6 @@ repos:
     hooks:
       - id: end-of-file-fixer
       - id: trailing-whitespace
-      - id: check-builtin-literals
       - id: detect-private-key
-      - id: check-json
+      - id: check-executables-have-shebangs
+      - id: check-symlinks

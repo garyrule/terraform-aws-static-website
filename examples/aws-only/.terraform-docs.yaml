@@ -16,9 +16,20 @@ sections:
 content: |-
   {{ .Header }}
 
-  ## Example using AWS Route 53
+  {{ include "../../doc/INSTRUCTIONS.md" }}
+  {{ include "../../doc/VALIDATION_CHECK.md" }}
+
+  ## Examples
+  ### AWS Route 53 Minimal Example
+  This is the bare minimum configuration need to deploy a website using Route 53
   ```hcl
   {{ include "main.tf" }}
+  ```
+
+  ### AWS Route 53 Full Example
+  Not every option is passed but this will provide an example of a full configuration.
+  ```hcl
+  {{ include ".example.tf" }}
   ```
   {{ .Providers }}
   {{ .Inputs }}
