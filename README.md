@@ -3,7 +3,7 @@
 
 With support for using [Gandi](https://www.gandi.net) LiveDNS.
 
-![terraform-aws-static-website](https://github.com/garyrule/terraform-aws-static-website/blob/bb572caa8fce31fed41f5e630e182385373be1e3/img/dia.jpeg)
+![terraform-aws-static-website](https://github.com/garyrule/terraform-aws-static-website/blob/d8ebea36fe017cf84fbe50ff07144051d3a08078/img/dia.jpeg)
 
 ## Features
 * Option to use either Route 53 (default) or Gandi LiveDNS.
