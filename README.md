@@ -28,7 +28,7 @@ With support for using [Gandi](https://www.gandi.net) LiveDNS.
   * [Server Side Encryption](https://docs.aws.amazon.com/AmazonS3/latest/userguide/serv-side-encryption.html) using either S3 managed keys (default) or with AWS Key Management Service.
     * To choose KMS see: `bucket_website_sse_algo` and `bucket_cloudfront_logs_sse_algo`
     * To specify a KMS key see: `bucket_website_sse_kms_key_id` and `bucket_cloudfront_logs_kms_key_id`.
-* Support for [gandi_sharing_id](https://aws.amazon.com/cloudfront/pricing/)
+* Support for [gandi_sharing_id](https://api.gandi.net/docs/reference/#Sharing-ID)
 
 
 ## Components

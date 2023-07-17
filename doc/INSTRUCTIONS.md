@@ -18,7 +18,7 @@
 ### Edit Configuration - Optional
 Edit `main.tf` and change inputs to match your requirements.
 
-See [Example](#example) for more information.
+See [Example](#examples) for more information.
 
 ### Deploy Website
 #### Initialize terraform
