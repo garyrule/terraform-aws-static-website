@@ -8,3 +8,4 @@
 *.lock.hcl
 *tfplan*
 *.save
+*tfout*

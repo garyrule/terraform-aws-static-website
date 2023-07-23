@@ -14,9 +14,7 @@ repos:
     - id: terraform-fmt
       args: ['-recursive']
     - id: terraform-fmt
-      args: ['examples/aws-only/.example.tf']
-    - id: terraform-fmt
-      args: ['examples/gandi-livedns/.example.tf']
+      args: ['example-files/hcl']
     - id: terraform-validate
       exclude: 'example'
 
@@ -36,3 +34,9 @@ repos:
       - id: detect-private-key
       - id: check-executables-have-shebangs
       - id: check-symlinks
+
+  - repo: https://github.com/tcort/markdown-link-check
+    rev: v3.11.2
+    hooks:
+      - id: markdown-link-check
+        args: [ -q, -c .markdown-link-check.json ]

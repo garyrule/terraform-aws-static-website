@@ -4,32 +4,37 @@ set -e
 main() {
   syntaxCheck "${@}"
 
-  bucket_search="^bucket-website-id"
-  cloudfront_search="cloudfront-distribution-id"
+  bucket_search="^bucket_website_id"
+  bucket_versioning_search="^bucket_website_versioning_enabled"
+  cloudfront_search="cloudfront_distribution_id"
 
+  echo
   echo "This script is provided as a demonstration only"
   echo
 
-  echo -n "Source dir: ${source_dir} "
+  echo "Source dir: ${source_dir} "
 
   # Get terraform outputs
   tf_output=$(terraform output)
 
   # Get Bucket ID
   if bucket_id=$(echo "${tf_output}" | grep "${bucket_search}" | awk '{print $3}' | tr -d \"); then
-    echo -n "Bucket ID: ${bucket_id} "
+    echo "Bucket ID: ${bucket_id} "
   else
     echo "Unable to find Bucket ID"
     exit 1
   fi
 
+
   # Get CloudFront Distribution ID
   if distribution=$(echo "${tf_output}" | grep "${cloudfront_search}" | awk '{print $3}' | tr -d \"); then
-    echo -n "CloudFront Distribution: ${distribution} "
+    echo "CloudFront Distribution: ${distribution} "
   else
     echo "Couldn't find Distribution"
     exit 1
   fi
+
+  echo
 
   # Sync Files
   cd "${source_dir}"
@@ -42,17 +47,22 @@ main() {
   else
     echo "Copying files from ${source_dir} to s3://${bucket_id}"
     echo "${sync_output}"
-    if terraform output |grep versioning |grep s3-bucket-static-versioning-enabled |awk '{print $3}';then
-      echo "Versioning is enabled; no need to invalidate CloudFront cache"
+    if bucket_versioning=$(echo "${tf_output}" |grep ${bucket_versioning_search}|awk '{print $3}');then
+      if [[ "${bucket_versioning}" == "true" ]];then
+        echo
+        echo "Versioning is enabled; no need to invalidate CloudFront cache"
+      else
+        echo
+        echo "Versioning is not enabled; invalidating CloudFront cache"
+        aws cloudfront create-invalidation --distribution-id "${distribution}" --paths "/*" | jq '.Invalidation.Id, .Invalidation.Status'
+      fi
     else
-      echo "Versioning is not enabled; invalidating CloudFront cache"
-      aws cloudfront create-invalidation --distribution-id "${distribution}" --paths "/*" | jq '.Invalidation.Id, .Invalidation.Status'
+      echo "Couldn't get bucket versioning status"
     fi
   fi
 }
 
 syntaxCheck() {
-  ### PARSE OPTIONS
   while getopts "hs:" options; do
     case $options in
     s) source_dir=$OPTARG ;;
@@ -69,15 +79,6 @@ syntaxCheck() {
 
   if [[ ! -d "${source_dir}" ]]; then
     echo "${source_dir} not a directory"
-    exit 1
-  fi
-
-  if [[ ! -f "${source_dir}/index.html" ]]; then
-    echo "Source directory does not have required index.html file present"
-    exit 1
-  fi
-  if [[ ! -f "${source_dir}/error.html" ]]; then
-    echo "Source directory does not have required error.html file present"
     exit 1
   fi
 }
