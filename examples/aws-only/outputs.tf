@@ -1,1 +1,1 @@
-../../example-files/outputs.tf
+../../example-files/hcl/outputs.tf

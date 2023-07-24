@@ -16,21 +16,24 @@ content: |-
   {{ .Header }}
 
   {{ include "../../doc/INSTRUCTIONS.md" }}
-  {{ include "../../doc/VALIDATION_CHECK.md" }}
 
-  ## Example
+  ## Examples
   ### Gandi LiveDNS Minimal Example
   This is the bare minimum configuration need to deploy a website using Gandi
   ```hcl
-  {{ include "main.tf" }}
+  {{ include "../../example-files/hcl/gandi-minimal.tf" }}
   ```
 
   ### Gandi LiveDNS Full Example
   Not every option is passed but this will provide an example of a full configuration.
   ### Gandi LiveDNS
   ```hcl
-  {{ include ".example.tf" }}
+  {{ include "../../example-files/hcl/gandi-full.tf" }}
   ```
+
+  ### Additional Examples
+  You can find a couple additional examples in the [aws-only example README.md](../examples/aws-only/README.md)
+
   {{ .Providers }}
   {{ .Inputs }}
   {{ .Outputs }}

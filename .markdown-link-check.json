@@ -1,0 +1,13 @@
+{
+  "ignorePatterns": [
+    {
+      "pattern": "/terraform-aws-static-website/releases/"
+    },
+    {
+      "pattern": "^#.*"
+    },
+    {
+      "pattern": "^\\.\\./.*$"
+    }
+  ]
+}

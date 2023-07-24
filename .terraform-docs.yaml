@@ -19,7 +19,6 @@ output:
   mode: inject
   template: |-
     <!-- BEGIN_TF_DOCS -->
-    # terraform-docs
     {{ .Content }}
     <!-- END_TF_DOCS -->
 
