@@ -28,17 +28,31 @@ provider "aws" {
   region = "us-east-1"
 }
 
-
 locals {
   #______________________________
   # Input Validation
   #______________________________
   # See the doc/VALIDATION_CHECK.md for more information.
-  validate_inputs = (
-    var.dns_type == "aws" && var.route53_zone_id != "" && var.website_hostname != ""
+
+  # Check sse_algo and kms_key_id have matching values and set valid_website_sse
+  valid_bucket_sse = (
+    var.bucket_website_sse_algo == "AES256" && var.bucket_website_sse_kms_key_id == ""
     ) || (
-    var.dns_type == "gandi" && var.gandi_key != "" && var.website_hostname != ""
+    var.bucket_website_sse_algo == "aws:kms" && var.bucket_website_sse_kms_key_id != ""
+    ) || (
+    var.bucket_cloudfront_logs_sse_algo == "AES256" && var.bucket_cloudfront_logs_sse_kms_key_id == ""
+    ) || (
+    var.bucket_cloudfront_logs_sse_algo == "aws:kms" && var.bucket_cloudfront_logs_sse_kms_key_id != ""
   )
+
+  # Verify DNS selection and required inputs
+  # Include the valid_bucket_sse
+  validate_inputs = (
+    var.dns_type == "aws" && var.route53_zone_id != "" && var.website_hostname != "" && local.valid_bucket_sse
+    ) || (
+    var.dns_type == "gandi" && var.gandi_key != "" && var.website_hostname != "" && local.valid_bucket_sse
+  )
+
   #______________________________
   # Are we using Gandi or AWS?
   gandi_zone = var.dns_type == "gandi" ? true : false

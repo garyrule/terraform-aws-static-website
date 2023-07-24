@@ -11,7 +11,7 @@ terraform {
 
 module "site" {
   source           = "garyrule/static-website/aws"
-  version          = "0.0.3"
+  version          = "0.1.0"
   dns_type         = "gandi"
   gandi_key        = var.gandi_key
   website_hostname = var.website_hostname

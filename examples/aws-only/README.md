@@ -37,7 +37,7 @@ See [Example](#examples) for more information.
 
 ### Static Assets
 This module does not sync static assets for you.
-See [Static Assets](doc/STATIC_ASSETS.md) for more information.
+See [Static Assets](../../doc/STATIC_ASSETS.md) for more information.
 
 ## Examples
 ### AWS Route 53 Minimal Example
@@ -73,6 +73,18 @@ terraform {
     }
   }
 }
+
+module "site" {
+  source           = "garyrule/static-website/aws"
+  version          = "0.1.0"
+  route53_zone_id  = var.route53_zone_id
+  website_hostname = var.website_hostname
+  region           = "us-east-2"
+
+  # Static asset bucket
+  bucket_website_policy = data.aws_iam_policy_document.my_custom_policy.json
+}
+
 # Create your Custom Policy
 data "aws_iam_policy_document" "my_custom_policy" {
   statement {
@@ -90,28 +102,16 @@ data "aws_iam_policy_document" "my_custom_policy" {
     ]
 
     resources = [
-      module.site.bucket-website-arn,
-      "${module.site.bucket-website-arn}/*",
+      module.site.bucket_website_arn,
+      "${module.site.bucket_website_arn}/*",
     ]
 
     condition {
       test     = "StringEquals"
       variable = "AWS:SourceArn"
-      values   = [module.site.cloudfront-distribution-arn]
+      values   = [module.site.cloudfront_distribution_arn]
     }
   }
-}
-
-
-module "site" {
-  source           = "garyrule/static-website/aws"
-  version          = "0.0.3"
-  route53_zone_id  = var.route53_zone_id
-  website_hostname = var.website_hostname
-  region           = "us-east-2"
-
-  # Static asset bucket
-  bucket_website_policy = data.aws_iam_policy_document.my_custom_policy.json
 }
 ```
 ### AWS Route 53 Example with Bucket Lifecycle Policy and KMS Key for Encryption
@@ -144,17 +144,17 @@ resource "aws_kms_alias" "logs" {
 # Pass the kms key ARN to the module's bucket_cloudfront_logs_sse_kms_key variable
 module "site" {
   source           = "garyrule/static-website/aws"
-  version          = "0.0.3"
+  version          = "0.1.0"
   route53_zone_id  = var.route53_zone_id
   website_hostname = var.website_hostname
   region           = "us-east-2"
 
   # CloudFront logs bucket
-  bucket_cloudfront_logs_versioning    = false
-  bucket_cloudfront_logs_key_enabled   = true
-  bucket_cloudfront_logs_force_destroy = true
-  bucket_cloudfront_logs_sse_algo      = "AES256"
-  bucket_cloudfront_logs_sse_kms_key   = aws_kms_key.logs.arn
+  bucket_cloudfront_logs_versioning     = false
+  bucket_cloudfront_logs_key_enabled    = true
+  bucket_cloudfront_logs_force_destroy  = true
+  bucket_cloudfront_logs_sse_algo       = "AES256"
+  bucket_cloudfront_logs_sse_kms_key_id = aws_kms_key.logs.arn
 
 }
 

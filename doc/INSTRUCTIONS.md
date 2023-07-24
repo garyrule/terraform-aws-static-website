@@ -33,4 +33,4 @@ See [Example](#examples) for more information.
 
 ### Static Assets
 This module does not sync static assets for you.
-See [Static Assets](doc/STATIC_ASSETS.md) for more information.
+See [Static Assets](../../doc/STATIC_ASSETS.md) for more information.

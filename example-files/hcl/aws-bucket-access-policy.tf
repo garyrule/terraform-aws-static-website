@@ -8,6 +8,18 @@ terraform {
     }
   }
 }
+
+module "site" {
+  source           = "garyrule/static-website/aws"
+  version          = "0.1.0"
+  route53_zone_id  = var.route53_zone_id
+  website_hostname = var.website_hostname
+  region           = "us-east-2"
+
+  # Static asset bucket
+  bucket_website_policy = data.aws_iam_policy_document.my_custom_policy.json
+}
+
 # Create your Custom Policy
 data "aws_iam_policy_document" "my_custom_policy" {
   statement {
@@ -25,26 +37,14 @@ data "aws_iam_policy_document" "my_custom_policy" {
     ]
 
     resources = [
-      module.site.bucket-website-arn,
-      "${module.site.bucket-website-arn}/*",
+      module.site.bucket_website_arn,
+      "${module.site.bucket_website_arn}/*",
     ]
 
     condition {
       test     = "StringEquals"
       variable = "AWS:SourceArn"
-      values   = [module.site.cloudfront-distribution-arn]
+      values   = [module.site.cloudfront_distribution_arn]
     }
   }
-}
-
-
-module "site" {
-  source           = "garyrule/static-website/aws"
-  version          = "0.0.3"
-  route53_zone_id  = var.route53_zone_id
-  website_hostname = var.website_hostname
-  region           = "us-east-2"
-
-  # Static asset bucket
-  bucket_website_policy = data.aws_iam_policy_document.my_custom_policy.json
 }

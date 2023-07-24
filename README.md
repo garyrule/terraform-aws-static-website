@@ -36,7 +36,7 @@ With support for using [Gandi](https://www.gandi.net) LiveDNS.
 |--------------------------------------------------|--------------------------------|
 | DNS records - Website and certificate validation | [Route 53] or [Gandi LiveDNS]  |
 | SSL Certificate                                  | [ACM]                          |
-| Content Ddelivery Network                        | [CloudFront]                   |
+| Content Delivery Network                        | [CloudFront]                   |
 | Static Asset Storage and CloudFront Logs         | [S3]                           |
 
 ## Prerequisites
@@ -54,7 +54,7 @@ With support for using [Gandi](https://www.gandi.net) LiveDNS.
   * Private encrypted buckets with managed access for CloudFront via [Origin Access Control].
     * Amazon S3 SSE managed keys by default and the ability to use your own KMS keys
   * Default viewer protocol redirects to HTTPS
-  * Module allows TLS protocol v1+ only.
+  * Module defaults to TLSv1.2 and allows TLS protocol v1+ only.
 * Cost conscious defaults
   * S3 [Bucket keys] enabled by default which will reduce costs when using a KMS key.
   * Option for customers of Gandi to use their DNS service, which is provided at no extra cost.
@@ -63,7 +63,7 @@ With support for using [Gandi](https://www.gandi.net) LiveDNS.
 
 ## Examples
 [Example directories] include a minimal configuration in `main.tf`.
-The README.md file for eache example shows a more detailed
+The README.md file for each example shows a more detailed
 configuration example.
 
 
@@ -88,7 +88,7 @@ options and defaults.
 Pass a list of Lambda functions via the [Input] variable: `cloudfront_cache_behavior_lambda_function_associations`
 
 #### CloudFront Function Association
-Pasa  list of CloudFront Functions via the [Input] variable `cloudfront_cache_behavior_function_associations`
+Pass a list of CloudFront Functions via the [Input] variable `cloudfront_cache_behavior_function_associations`
 
 #### Geographic Restrictions
 Manage [Geo restrictions], disabled by default, with the `cloudfront_geo_restriction_type` and `cloudfront_geo_restriction_locations` [Input] variables.
@@ -150,7 +150,7 @@ Access to private static assets bucket granted to CloudFront via [Origin Access 
 [Create AWS Access Key]:https://repost.aws/knowledge-center/create-access-key
 [Field Level Encryption]: https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/field-level-encryption.html
 [Sentinel]:https://docs.hashicorp.com/sentinel/terraform
-[Custom Bucket IAM Policy]:doc/CUSTOM_BUCKET_IAM_POLICY.md
+[Custom Bucket IAM Policy]:example-files/hcl/aws-bucket-access-policy.tf
 [Input]:#inputs
 
 

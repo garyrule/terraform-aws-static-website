@@ -26,17 +26,17 @@ resource "aws_kms_alias" "logs" {
 # Pass the kms key ARN to the module's bucket_cloudfront_logs_sse_kms_key variable
 module "site" {
   source           = "garyrule/static-website/aws"
-  version          = "0.0.3"
+  version          = "0.1.0"
   route53_zone_id  = var.route53_zone_id
   website_hostname = var.website_hostname
   region           = "us-east-2"
 
   # CloudFront logs bucket
-  bucket_cloudfront_logs_versioning    = false
-  bucket_cloudfront_logs_key_enabled   = true
-  bucket_cloudfront_logs_force_destroy = true
-  bucket_cloudfront_logs_sse_algo      = "AES256"
-  bucket_cloudfront_logs_sse_kms_key   = aws_kms_key.logs.arn
+  bucket_cloudfront_logs_versioning     = false
+  bucket_cloudfront_logs_key_enabled    = true
+  bucket_cloudfront_logs_force_destroy  = true
+  bucket_cloudfront_logs_sse_algo       = "AES256"
+  bucket_cloudfront_logs_sse_kms_key_id = aws_kms_key.logs.arn
 
 }
 

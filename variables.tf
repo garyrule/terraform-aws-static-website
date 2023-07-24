@@ -52,7 +52,7 @@ variable "route53_zone_id" {
   default     = ""
 
   validation {
-    condition     = can(regex("^$|^Z[a-zA-Z0-9]{13}$", var.route53_zone_id))
+    condition     = can(regex("^$|^Z[a-zA-Z0-9]{13,32}$", var.route53_zone_id))
     error_message = "The route53_zone_id input must be a valid Route 53 Zone ID or an empty string."
   }
 }
@@ -63,7 +63,7 @@ variable "gandi_key" {
   default     = ""
 
   validation {
-    condition     = can(regex("^$|^[a-zA-Z0-9]{32}$", var.gandi_key))
+    condition     = can(regex("^$|^[a-zA-Z0-9]{10,32}$", var.gandi_key))
     error_message = "The gandi_key input must be a valid Gandi API Key or an empty string."
   }
 }
@@ -77,7 +77,7 @@ variable "gandi_sharing_id" {
   default     = ""
 
   validation {
-    condition     = can(regex("^$|^[a-zA-Z0-9]{48}$", var.gandi_sharing_id))
+    condition     = can(regex("^$|^[a-zA-Z0-9]{36,64}$", var.gandi_sharing_id))
     error_message = "The gandi_sharing_id input must be a valid Gandi Sharing ID or an empty string."
   }
 }
@@ -173,8 +173,7 @@ variable "bucket_website_sse_kms_key_id" {
     condition = (
       can(
         regex(
-          "^$|^arn:aws:kms:[a-z]{2}-[a-z]+-[0-9]:[0-9]{12}:key/[a-f0-9]{8}-" +
-          "[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$",
+          "^$|^arn:aws:kms:[a-z]{2}-[a-z]+-[0-9]:[0-9]{12}:key/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$",
           var.bucket_website_sse_kms_key_id
         )
       )
@@ -257,9 +256,7 @@ variable "bucket_cloudfront_logs_sse_kms_key_id" {
   validation {
     condition = (
       can(
-        regex(
-          "^$|^arn:aws:kms:[a-z]{2}-[a-z]+-[0-9]:[0-9]{12}:key/[a-f0-9]{8}-" +
-          "[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$",
+        regex("^$|^arn:aws:kms:[a-z]{2}-[a-z]+-[0-9]:[0-9]{12}:key/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$",
           var.bucket_cloudfront_logs_sse_kms_key_id
         )
       )

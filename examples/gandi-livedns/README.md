@@ -37,7 +37,7 @@ See [Example](#examples) for more information.
 
 ### Static Assets
 This module does not sync static assets for you.
-See [Static Assets](doc/STATIC_ASSETS.md) for more information.
+See [Static Assets](../../doc/STATIC_ASSETS.md) for more information.
 
 ## Examples
 ### Gandi LiveDNS Minimal Example
@@ -80,7 +80,7 @@ terraform {
 
 module "site" {
   source           = "garyrule/static-website/aws"
-  version          = "0.0.3"
+  version          = "0.1.0"
   dns_type         = "gandi"
   gandi_key        = var.gandi_key
   website_hostname = var.website_hostname
